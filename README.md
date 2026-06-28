@@ -18,7 +18,7 @@
 
 <div align="center">
 
-<img src="exm_luaextended_logo.png" width="200" />
+<img src="exm_luaextended_logo.png" width="250" />
 
 </div>
 
