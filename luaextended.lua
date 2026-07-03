@@ -7,7 +7,7 @@
 --               написанный специально для игры
 --             Ex Machina / Hard Truck Apocalypse
 --
---                     LuaExtended v1.0
+--                     LuaExtended v1.1
 -- 
 -- 
 -- ===================== Автор E Jet ==========================
@@ -19,10 +19,11 @@
 -- ======================= ЧТО ЭТО ============================
 --
 --
---      Этот lua-модуль является сборником полезных небольших 
--- функций под любую вашу задачу:
+--      Этот lua-модуль является сборником полезных и не очень
+-- небольших функций под любую вашу задачу:
 --      - Расширения string;
 --      - Расширения table;
+--      - Coroutine-таймер;
 --      - Python-like функция try;
 --      - Простые взаимодействия file.
 --
@@ -143,15 +144,23 @@
 --        /* Строки */
 --        [M] string string_strip( string )   /* Убирает пробелы в начале и конце строки */
 --        [M] table string_split( string, string divider )   /* Разделяет строку по желаемому разделителю, " " - если divider = nil. Возвращает список с строками */
+--        [M] int string_int( string )       /* Возвращает все цифры из строки как одно число int */
+--        [M] string string_shield( string, bool Reverse )   /* Ставит или убирает экранирование спецсимволов в строке. Примеры: [LuaE:string_shield("Текст?.+-%")] --> "Текст%?%.%+%-%%"; [LuaE:string_shield("Текст%?%.%+%-%%", true)] --> "Текст?.+-%" */
+--        [M] table string_to_table( string Table )  /* Преобразует строку-таблицу в таблицу */
 --
 --        /* Таблицы */
 --        [M] string table_debug( table )      /* Возвращает строку "распакованной" таблицы. Разворачивает все вложения, очень удобно для отладки таблицы в LOG() */
 --        [M] table table_copy( table )        /* Возвращает копию таблицы. В lua присвоение таблицы новой переменной НЕ РАВНО созданию копии этой таблицы: [local t = {}; local t2 = t	--> t и t2 одна и та же таблица, просто это разные ссылки на нее]; [local t = {}; local t2 = table_copy(t)	--> t и t2 разные таблицы] */
 --        [M] bool table_equal( table t1, table t2 )   /* Проверяет, являются ли таблицы одинаковыми (поверхностно) */
---        [M] bool table_empty( table )      /* Проверяет, является ли таблица пустой */
+--        [M] bool table_empty( table )        /* Проверяет, является ли таблица пустой */
+--        [M] string table_to_string( table )  /* Преобразует таблицу в строку */
 --        [M] bool table_contains_value( table, any value )   /* Проверяет, содержит ли таблица значение (поверхностно) */
 --        [M] bool table_contains_key( table, string key )    /* Проверяет, содержит ли таблица ключ (поверхностно) */
 --        [M] int table_item_amount( table, any item )    /* Считает количество значений в таблице (поверхностно) */
+--
+--        /* Таймеры */
+--        [M] void script_pause( string CoroutineName, function Callback, int Delay )    /* Создает корутину CoroutineName к которой можно обратиться в любом месте через [script_resume]. Если при обращении к корутине реальное время Delay (секунды) вышло, будет вызвана функция Callback: без скобочек "()", просто имя функции, либо целиком тело функции */
+--        [M] AIParam script_resume( string CoroutineName )    /* Обращается к корутине CoroutineName, созданной в [script_pause] */
 --
 --        /* Обертка безопасности */
 --        Class try
@@ -199,6 +208,15 @@
 --
 --     local isValue = LuaE.try:value("pisya popa kakashechki").AsRUchars
 --     --> isValue = "пися попа какашечки"
+--
+--     LuaE:script_pause("co_one", function() println("Timer 1 done!") end, 5)
+--     LuaE:script_pause("co_two", function() println("Timer 2 done!") end, 10)
+--     --Через 5 секунд реального времени:
+--     LuaE:script_resume("co_one")
+--     --> Timer 1 done!
+--     --Еще через 5 секунд реального времени:
+--     LuaE:script_resume("co_two")
+--     --> Timer 2 done!
 -- ]]
 --
 ---------------------------------------------------------------
@@ -216,6 +234,9 @@
 -- =================== КОММЕНТАРИИ АВТОРА =====================
 -- 
 -- E Jet: Нужно больше всяких псевдополезностей.
+--
+-- E Jet: Благодарность за идею конвертирования строка/таблица:
+--               Целую Петровича в щечк <3 :3 :* ~*~* ///// >.<
 -- 
 -- ============================================================
 -- ============================================================
@@ -226,13 +247,18 @@
 
 local LuaE = {}
 LuaE.__index = LuaE
-LuaE.version = "v1.0"
+LuaE.version = "v1.1"
+LuaE.try = {}
+LuaE.freezed_code = {}
+local freeze = LuaE.freezed_code
+local try = LuaE.try
 
 local str_rep = string.rep
 local str_len = string.len
 local str_sub = string.sub
 local str_gsub = string.gsub
 local str_low = string.lower
+local str_find = string.find
 
 local t_insert = table.insert
 local t_getn = table.getn
@@ -241,6 +267,25 @@ local io_open = io.open
 
 
 LOG("[I] Init Module LuaExtended.lua ...")
+
+
+LuaE.shield = {
+    ["\\"] = "%\\",
+    ["\""] = "%\"",
+    ["'"] = "%'",
+    ["["] = "%[",
+    ["]"] = "%]",
+    ["("] = "%(",
+    [")"] = "%)",
+    ["."] = "%.",
+    ["^"] = "%^",
+    ["$"] = "%$",
+    ["*"] = "%*",
+    ["+"] = "%+",
+    ["-"] = "%-",
+    ["?"] = "%?",
+    ["%"] = "%%"
+}
 
 
 function LuaE:string_strip(str)
@@ -265,6 +310,32 @@ function LuaE:string_split(str, divider)
         t_insert(words, word)
     end
     return words
+end
+function LuaE:string_int(str)
+	local retVal = ""
+	str_gsub(str, "%d+", function(e) retVal = retVal .. e end)
+	return tonumber(retVal)
+end
+function LuaE:string_shield(str, boolReverse)
+	if boolReverse then
+		if str_find(str, "%%%%") then
+			str = str_gsub(str, "%%%%", "||")
+			str = str_gsub(str, "%%", "")
+			str = str_gsub(str, "||", "%%")
+		else
+			str = str_gsub(str, "%%", "")
+		end
+		return str
+	else
+		return str_gsub(str, ".", function(char) return self.shield[char] or char end)
+	end
+end
+function LuaE:string_to_table(str)
+    if not str_find(str, "{") then 
+		str = "{}" 
+	end
+	local table = dostring("local t = "..str.."; return t")
+	return table
 end
 
 
@@ -306,6 +377,43 @@ function LuaE:table_equal(t1, t2)
 end
 function LuaE:table_empty(tbl)
     return next(tbl) == nil
+end
+function LuaE:table_to_string(tbl)
+    local function escape_str(s)
+    	s = string.gsub(s, '"', "'")
+    	return "'" .. s .. "'"
+	end
+
+	local function serialize(tbl)
+    	local result = "{"
+		if type(tbl)~="table" then
+			return "nil"
+		end
+    	for i = 1, getn(tbl) do
+			local v = tbl[i]
+			local vtype = type(v)
+			if vtype == "table" then
+				result = result .. serialize(v)
+			elseif vtype == "number" then
+				result = result .. v
+			elseif vtype == "string" then
+				result = result .. escape_str(v)
+			else
+				--result = '{"idi nahui eto ne massiff)))0)"}'
+				result = result .. tostring(v)
+			end
+			if i < getn(tbl) then
+				result = result .. ","
+			end
+		end
+    	result = result .. "}"
+		if result=="{}" then
+			result = "nil"
+		end
+		return result
+  	end
+
+	return serialize(tbl)
 end
 function LuaE:table_contains_value(tbl, value)
 	for _, v in ipairs(tbl) do
@@ -375,8 +483,30 @@ function LuaE:file_open(f)
 end
 
 
-LuaE.try = {}
-local try = LuaE.try
+function LuaE:script_pause(stringCoroutineName, functionCallback, intDelay)  
+	local stringCoroutineName = stringCoroutineName or "co_one"
+    local start = os.time()  
+    freeze[stringCoroutineName] = coroutine.create(function()  
+        while os.time() - start < intDelay do  
+            coroutine.yield()  
+        end
+		local s, e = pcall(functionCallback)
+        if not s then
+			LOG("[E] Module LuaExtended.lua === script_pause(): "..tostring(e))
+		end
+    end)
+end
+function LuaE:script_resume(stringCoroutineName)  
+	local stringCoroutineName = stringCoroutineName or "co_one"
+	local co_status = coroutine.status(freeze[stringCoroutineName])
+	if co_status=="suspended" then
+		return coroutine.resume(freeze[stringCoroutineName])
+	end
+	return co_status 
+end
+
+
+
 
 --XMLParser
 local function TranslateRUCharsToENChars(text)
