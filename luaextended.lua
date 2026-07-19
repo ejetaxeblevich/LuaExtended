@@ -309,7 +309,7 @@ if not string.match then
 end
 if not string.strip then
     function string.strip(str)
-        return str_gsub(str, "^%s*(.-)%s*$", "%1")
+        return (str_gsub(str, "^%s*(.-)%s*$", "%1"))
     end
 end
 if not string.split then
