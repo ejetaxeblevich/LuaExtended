@@ -7,7 +7,7 @@
 --               написанный специально для игры
 --             Ex Machina / Hard Truck Apocalypse
 --
---                     LuaExtended v1.1
+--                     LuaExtended v2.0
 -- 
 -- 
 -- ===================== Автор E Jet ==========================
@@ -26,6 +26,10 @@
 --      - Coroutine-таймер;
 --      - Python-like функция try;
 --      - Простые взаимодействия file.
+--
+--      Версии модуля v2.x пробрасывают свои функции в выше-
+-- указанные глобальные таблицы и используются на ряду с другими
+-- из игры!
 --
 ------------------------- Дисклеймер -----------------------
 --
@@ -139,25 +143,27 @@
 --
 -- c
 -- [[
+--    /* Строки */
+--    [F] tuple   string.match( string, string pattern, int position )  /* Ищет вхождение шаблона в строку, возвращает захваченные значения. Поддерживает регулярные выражения */
+--    [F] string  string.strip( string )   /* Убирает пробелы в начале и конце строки */
+--    [F] table   string.split( string, string divider )   /* Разделяет строку по желаемому разделителю, " " - если divider = nil. Возвращает список с строками */
+--    [F] int     string.int( string )     /* Возвращает все цифры из строки как одно число int */
+--    [F] string  string.shield( string, bool Reverse )    /* Ставит или убирает экранирование спецсимволов в строке. Примеры: [string.shield("Текст?.+-%")] --> "Текст%?%.%+%-%%"; [string.shield("Текст%?%.%+%-%%", true)] --> "Текст?.+-%" */
+--    [F] table   string.totable( string Table )  /* Преобразует строку-таблицу в таблицу */
+--
+--    /* Таблицы */
+--    [F] string  table.debug( table )      /* Возвращает строку "распакованной" таблицы. Разворачивает все вложения, очень удобно для отладки таблицы в LOG() */
+--    [F] table   table.copy( table )       /* Возвращает копию таблицы. В lua присвоение таблицы новой переменной НЕ РАВНО созданию копии этой таблицы: [local t = {}; local t2 = t	--> t и t2 одна и та же таблица, просто это разные ссылки на нее]; [local t = {}; local t2 = table_copy(t)	--> t и t2 разные таблицы] */
+--    [F] bool    table.equal( table t1, table t2 )   /* Проверяет, являются ли таблицы одинаковыми (поверхностно) */
+--    [F] bool    table.empty( table )      /* Проверяет, является ли таблица пустой */
+--    [F] string  table.tostring( table )   /* Преобразует таблицу в строку */
+--    [F] bool    table.containsvalue( table, any value )   /* Проверяет, содержит ли таблица значение (поверхностно) */
+--    [F] bool    table.containskey( table, string key )    /* Проверяет, содержит ли таблица ключ (поверхностно) */
+--    [F] int     table.amount( table, any item )    /* Считает количество значений в таблице (поверхностно) */
+--
+--
 --    Class LuaE
 --    {
---        /* Строки */
---        [M] string string_strip( string )   /* Убирает пробелы в начале и конце строки */
---        [M] table string_split( string, string divider )   /* Разделяет строку по желаемому разделителю, " " - если divider = nil. Возвращает список с строками */
---        [M] int string_int( string )       /* Возвращает все цифры из строки как одно число int */
---        [M] string string_shield( string, bool Reverse )   /* Ставит или убирает экранирование спецсимволов в строке. Примеры: [LuaE:string_shield("Текст?.+-%")] --> "Текст%?%.%+%-%%"; [LuaE:string_shield("Текст%?%.%+%-%%", true)] --> "Текст?.+-%" */
---        [M] table string_to_table( string Table )  /* Преобразует строку-таблицу в таблицу */
---
---        /* Таблицы */
---        [M] string table_debug( table )      /* Возвращает строку "распакованной" таблицы. Разворачивает все вложения, очень удобно для отладки таблицы в LOG() */
---        [M] table table_copy( table )        /* Возвращает копию таблицы. В lua присвоение таблицы новой переменной НЕ РАВНО созданию копии этой таблицы: [local t = {}; local t2 = t	--> t и t2 одна и та же таблица, просто это разные ссылки на нее]; [local t = {}; local t2 = table_copy(t)	--> t и t2 разные таблицы] */
---        [M] bool table_equal( table t1, table t2 )   /* Проверяет, являются ли таблицы одинаковыми (поверхностно) */
---        [M] bool table_empty( table )        /* Проверяет, является ли таблица пустой */
---        [M] string table_to_string( table )  /* Преобразует таблицу в строку */
---        [M] bool table_contains_value( table, any value )   /* Проверяет, содержит ли таблица значение (поверхностно) */
---        [M] bool table_contains_key( table, string key )    /* Проверяет, содержит ли таблица ключ (поверхностно) */
---        [M] int table_item_amount( table, any item )    /* Считает количество значений в таблице (поверхностно) */
---
 --        /* Таймеры */
 --        [M] void script_pause( string CoroutineName, function Callback, int Delay )    /* Создает корутину CoroutineName к которой можно обратиться в любом месте через [script_resume]. Если при обращении к корутине реальное время Delay (секунды) вышло, будет вызвана функция Callback: без скобочек "()", просто имя функции, либо целиком тело функции */
 --        [M] AIParam script_resume( string CoroutineName )    /* Обращается к корутине CoroutineName, созданной в [script_pause] */
@@ -185,7 +191,7 @@
 --
 -- lua
 -- [[
---     local str = LuaE:string_strip("  lg1")
+--     local str = string.strip("  lg1")
 --     --> str = "lg1"
 --
 --     local success, retVal = LuaE.try(function() return 1 + 3 end)
@@ -247,7 +253,7 @@
 
 local LuaE = {}
 LuaE.__index = LuaE
-LuaE.version = "v1.1"
+LuaE.version = "v2.0"
 LuaE.try = {}
 LuaE.freezed_code = {}
 local freeze = LuaE.freezed_code
@@ -288,158 +294,198 @@ LuaE.shield = {
 }
 
 
-function LuaE:string_strip(str)
-	return str_gsub(str, "^%s*(.-)%s*$", "%1")
-end
-function LuaE:string_split(str, divider)
-    local words = {}
-    local word = ""
-	local divider = divider or " "
-    for i = 1, str_len(str) do
-        local char = str_sub(str, i, i)
-        if char == divider then
-            if word ~= "" then
-                t_insert(words, word)
-                word = ""
+if not string.match then
+    function string.match(str, pattern, pos)
+        local t = {str_find(str, pattern, pos)}
+        if t[1] then
+            if t_getn(t) > 2 then
+                return unpack(t, 3)
+            else
+                return str_sub(str, t[1], t[2])
             end
+        end
+        return nil
+    end
+end
+if not string.strip then
+    function string.strip(str)
+        return str_gsub(str, "^%s*(.-)%s*$", "%1")
+    end
+end
+if not string.split then
+    function string.split(str, divider)
+        local words = {}
+        local word = ""
+        local divider = divider or " "
+        for i = 1, str_len(str) do
+            local char = str_sub(str, i, i)
+            if char == divider then
+                if word ~= "" then
+                    t_insert(words, word)
+                    word = ""
+                end
+            else
+                word = word .. char
+            end
+        end
+        if word ~= "" then
+            t_insert(words, word)
+        end
+        return words
+    end
+end
+if not string.int then
+    function string.int(str)
+        local retVal = ""
+        str_gsub(str, "%d+", function(e) retVal = retVal .. e end)
+        return tonumber(retVal)
+    end
+end
+if not string.shield then
+    function string.shield(str, boolReverse)
+        if boolReverse then
+            if str_find(str, "%%%%") then
+                str = str_gsub(str, "%%%%", "||")
+                str = str_gsub(str, "%%", "")
+                str = str_gsub(str, "||", "%%")
+            else
+                str = str_gsub(str, "%%", "")
+            end
+            return str
         else
-            word = word .. char
+            return str_gsub(str, ".", function(char) return LuaE.shield[char] or char end)
         end
     end
-    if word ~= "" then
-        t_insert(words, word)
+end
+if not string.totable then
+    function string.totable(str)
+        if not str_find(str, "{") then 
+            str = "{}" 
+        end
+        local t = dostring("local t = "..str.."; return t")
+        return t
     end
-    return words
-end
-function LuaE:string_int(str)
-	local retVal = ""
-	str_gsub(str, "%d+", function(e) retVal = retVal .. e end)
-	return tonumber(retVal)
-end
-function LuaE:string_shield(str, boolReverse)
-	if boolReverse then
-		if str_find(str, "%%%%") then
-			str = str_gsub(str, "%%%%", "||")
-			str = str_gsub(str, "%%", "")
-			str = str_gsub(str, "||", "%%")
-		else
-			str = str_gsub(str, "%%", "")
-		end
-		return str
-	else
-		return str_gsub(str, ".", function(char) return self.shield[char] or char end)
-	end
-end
-function LuaE:string_to_table(str)
-    if not str_find(str, "{") then 
-		str = "{}" 
-	end
-	local table = dostring("local t = "..str.."; return t")
-	return table
 end
 
 
-function LuaE:table_debug(tbl, indent)
-    if type(tbl)~="table" then 
-        return ""..tostring(tbl) 
+if not table.debug then
+    function table.debug(tbl, indent)
+        if type(tbl)~="table" then 
+            return ""..tostring(tbl) 
+        end
+        indent = indent or 0
+        local result = ""
+        for key, value in pairs(tbl) do
+            if type(value) == "table" then
+                result = result .. str_rep(" ", indent) .. key .. " = {\n" .. table.debug(value, indent + 4) .. str_rep(" ", indent) .. "}\n"
+            else
+                result = result .. str_rep(" ", indent) .. key .. " = \"" .. tostring(value) .. "\"\n"
+            end
+        end
+        return result
     end
-    indent = indent or 0
-    local result = ""
-    for key, value in pairs(tbl) do
-        if type(value) == "table" then
-            result = result .. str_rep(" ", indent) .. key .. " = {\n" .. self:table_debug(value, indent + 4) .. str_rep(" ", indent) .. "}\n"
+end
+if not table.copy then
+    function table.copy(orig)
+        local orig_type = type(orig)
+        local copy
+        if orig_type == 'table' then
+            copy = {}
+            for orig_key, orig_value in next, orig, nil do
+                copy[table.copy(orig_key)] = table.copy(orig_value)
+            end
+            setmetatable(copy, table.copy(getmetatable(orig)))
         else
-            result = result .. str_rep(" ", indent) .. key .. " = \"" .. tostring(value) .. "\"\n"
+            copy = orig
         end
+        return copy
     end
-    return result
 end
-function LuaE:table_copy(orig)
-    local orig_type = type(orig)
-    local copy
-    if orig_type == 'table' then
-        copy = {}
-        for orig_key, orig_value in next, orig, nil do
-            copy[self:table_copy(orig_key)] = self:table_copy(orig_value)
+if not table.equal then
+    function table.equal(t1, t2)
+        if t_getn(t1) ~= t_getn(t2) then return false end
+        for i = 1, t_getn(t1) do
+            if t1[i] ~= t2[i] then return false end
         end
-        setmetatable(copy, self:table_copy(getmetatable(orig)))
-    else
-        copy = orig
+        return true
     end
-    return copy
 end
-function LuaE:table_equal(t1, t2)
-    if t_getn(t1) ~= t_getn(t2) then return false end
-    for i = 1, t_getn(t1) do
-        if t1[i] ~= t2[i] then return false end
+if not table.empty then
+    function table.empty(tbl)
+        return next(tbl) == nil
     end
-    return true
 end
-function LuaE:table_empty(tbl)
-    return next(tbl) == nil
-end
-function LuaE:table_to_string(tbl)
-    local function escape_str(s)
-    	s = string.gsub(s, '"', "'")
-    	return "'" .. s .. "'"
-	end
+if not table.tostring then
+    function table.tostring(tbl)
+        local function escape_str(s)
+            s = string.gsub(s, '"', "'")
+            return "'" .. s .. "'"
+        end
 
-	local function serialize(tbl)
-    	local result = "{"
-		if type(tbl)~="table" then
-			return "nil"
-		end
-    	for i = 1, getn(tbl) do
-			local v = tbl[i]
-			local vtype = type(v)
-			if vtype == "table" then
-				result = result .. serialize(v)
-			elseif vtype == "number" then
-				result = result .. v
-			elseif vtype == "string" then
-				result = result .. escape_str(v)
-			else
-				--result = '{"idi nahui eto ne massiff)))0)"}'
-				result = result .. tostring(v)
-			end
-			if i < getn(tbl) then
-				result = result .. ","
-			end
-		end
-    	result = result .. "}"
-		if result=="{}" then
-			result = "nil"
-		end
-		return result
-  	end
+        local function serialize(tbl)
+            local result = "{"
+            if type(tbl)~="table" then
+                return "nil"
+            end
+            for i = 1, getn(tbl) do
+                local v = tbl[i]
+                local vtype = type(v)
+                if vtype == "table" then
+                    result = result .. serialize(v)
+                elseif vtype == "number" then
+                    result = result .. v
+                elseif vtype == "string" then
+                    result = result .. escape_str(v)
+                else
+                    --result = '{"idi nahui eto ne massiff)))0)"}'
+                    result = result .. tostring(v)
+                end
+                if i < getn(tbl) then
+                    result = result .. ","
+                end
+            end
+            result = result .. "}"
+            if result=="{}" then
+                result = "nil"
+            end
+            return result
+        end
 
-	return serialize(tbl)
+        return serialize(tbl)
+    end
 end
-function LuaE:table_contains_value(tbl, value)
-	for _, v in ipairs(tbl) do
-		if v == value then
-			return true
-		end
-	end
-	return false
+if not table.containsvalue then
+    function table.containsvalue(tbl, value)
+        for _, v in ipairs(tbl) do
+            if v == value then
+                return true
+            end
+        end
+        return false
+    end
 end
-function LuaE:table_contains_key(tbl, key)
-	for k, _ in pairs(tbl) do
-		if k == key then
-			return true
-		end
-	end
-	return false
+if not table.containskey then
+    function table.containskey(tbl, key)
+        for k, _ in pairs(tbl) do
+            if k == key then
+                return true
+            end
+        end
+        return false
+    end
 end
-function LuaE:table_item_amount(tbl, item)
-	local skoka = 0
-	for _, v in ipairs(tbl) do
-		if v == item then
-			skoka = skoka+1
-		end
-	end
-	return skoka
+if not table.amount then
+    function table.amount(tbl, item)
+        local skoka = 0
+        for _, v in ipairs(tbl) do
+            if v == item then
+                skoka = skoka+1
+            end
+        end
+        return skoka
+    end
 end
+
 
 
 function LuaE:file_read(path)
