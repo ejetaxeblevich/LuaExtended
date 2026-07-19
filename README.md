@@ -105,31 +105,35 @@ end
 Здесь собраны все публичнные функции этого модуля. У каждой функции имеется детальное описание, что она делает и что в ней указывать. 
 
 > [!IMPORTANT]
+> Версии модуля `v2.x` пробрасывают свои функции в глобальные lua-таблицы `table` и `string` и используются на ряду с другими из игры!
+> 
 > **Обратите внимание**, что дочерний класс должен вызывать главный метод своего родительского класса вплоть до LuaE.
 
 > [!TIP]
 > Вы можете скроллить код ниже вправо и влево! Наведите курсор на полотно и колесиком мыши с помощью `shift` двигайте его!
 
 ```c
+/* Строки */
+[F] tuple   string.match( string, string pattern, int position )  /* Ищет вхождение шаблона в строку, возвращает захваченные значения. Поддерживает регулярные выражения */
+[F] string  string.strip( string )   /* Убирает пробелы в начале и конце строки */
+[F] table   string.split( string, string divider )   /* Разделяет строку по желаемому разделителю, " " - если divider = nil. Возвращает список с строками */
+[F] int     string.int( string )     /* Возвращает все цифры из строки как одно число int */
+[F] string  string.shield( string, bool Reverse )    /* Ставит или убирает экранирование спецсимволов в строке. Примеры: [string.shield("Текст?.+-%")] --> "Текст%?%.%+%-%%"; [string.shield("Текст%?%.%+%-%%", true)] --> "Текст?.+-%" */
+[F] table   string.totable( string Table )  /* Преобразует строку-таблицу в таблицу */
+
+/* Таблицы */
+[F] string  table.debug( table )      /* Возвращает строку "распакованной" таблицы. Разворачивает все вложения, очень удобно для отладки таблицы в LOG() */
+[F] table   table.copy( table )       /* Возвращает копию таблицы. В lua присвоение таблицы новой переменной НЕ РАВНО созданию копии этой таблицы: [local t = {}; local t2 = t	--> t и t2 одна и та же таблица, просто это разные ссылки на нее]; [local t = {}; local t2 = table.copy(t)	--> t и t2 разные таблицы] */
+[F] bool    table.equal( table t1, table t2 )   /* Проверяет, являются ли таблицы одинаковыми (поверхностно) */
+[F] bool    table.empty( table )      /* Проверяет, является ли таблица пустой */
+[F] string  table.tostring( table )   /* Преобразует таблицу в строку */
+[F] bool    table.containsvalue( table, any value )   /* Проверяет, содержит ли таблица значение (поверхностно) */
+[F] bool    table.containskey( table, string key )    /* Проверяет, содержит ли таблица ключ (поверхностно) */
+[F] int     table.amount( table, any item )    /* Считает количество значений в таблице (поверхностно) */
+
+
 Class LuaE
 {
-    /* Строки */
-    [M] string string_strip( string )   /* Убирает пробелы в начале и конце строки */
-    [M] table string_split( string, string divider )   /* Разделяет строку по желаемому разделителю, " " - если divider = nil. Возвращает список с строками */
-    [M] int string_int( string )       /* Возвращает все цифры из строки как одно число int */
-    [M] string string_shield( string, bool Reverse )   /* Ставит или убирает экранирование спецсимволов в строке. Примеры: [LuaE:string_shield("Текст?.+-%")] --> "Текст%?%.%+%-%%"; [LuaE:string_shield("Текст%?%.%+%-%%", true)] --> "Текст?.+-%" */
-    [M] table string_to_table( string Table )  /* Преобразует строку-таблицу в таблицу */
-
-    /* Таблицы */
-    [M] string table_debug( table )      /* Возвращает строку "распакованной" таблицы. Разворачивает все вложения, очень удобно для отладки таблицы в LOG() */
-    [M] table table_copy( table )        /* Возвращает копию таблицы. В lua присвоение таблицы новой переменной НЕ РАВНО созданию копии этой таблицы: [local t = {}; local t2 = t	--> t и t2 одна и та же таблица, просто это разные ссылки на нее]; [local t = {}; local t2 = table_copy(t)	--> t и t2 разные таблицы] */
-    [M] bool table_equal( table t1, table t2 )   /* Проверяет, являются ли таблицы одинаковыми (поверхностно) */
-    [M] bool table_empty( table )      /* Проверяет, является ли таблица пустой */
-    [M] string table_to_string( table )  /* Преобразует таблицу в строку */
-    [M] bool table_contains_value( table, any value )   /* Проверяет, содержит ли таблица значение (поверхностно) */
-    [M] bool table_contains_key( table, string key )    /* Проверяет, содержит ли таблица ключ (поверхностно) */
-    [M] int table_item_amount( table, any item )    /* Считает количество значений в таблице (поверхностно) */
-
     /* Таймеры */
     [M] void script_pause( string CoroutineName, function Callback, int Delay )    /* Создает корутину CoroutineName к которой можно обратиться в любом месте через [script_resume]. Если при обращении к корутине реальное время Delay (секунды) вышло, будет вызвана функция Callback: без скобочек "()", просто имя функции, либо целиком тело функции */
     [M] AIParam script_resume( string CoroutineName )    /* Обращается к корутине CoroutineName, созданной в [script_pause] */
@@ -154,7 +158,7 @@ Class LuaE
 ### Пример использования методов
 
 ```lua
-local str = LuaE:string_strip("  lg1")
+local str = string.strip("  lg1")
 --> str = "lg1"
 
 local success, retVal = LuaE.try(function() return 1 + 3 end)
