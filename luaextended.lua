@@ -7,7 +7,7 @@
 --               написанный специально для игры
 --             Ex Machina / Hard Truck Apocalypse
 --
---                     LuaExtended v2.0
+--                     LuaExtended v2.1
 -- 
 -- 
 -- ===================== Автор E Jet ==========================
@@ -143,46 +143,49 @@
 --
 -- c
 -- [[
---    /* Строки */
---    [F] tuple   string.match( string, string pattern, int position )  /* Ищет вхождение шаблона в строку, возвращает захваченные значения. Поддерживает регулярные выражения */
---    [F] string  string.strip( string )   /* Убирает пробелы в начале и конце строки */
---    [F] table   string.split( string, string divider )   /* Разделяет строку по желаемому разделителю, " " - если divider = nil. Возвращает список с строками */
---    [F] int     string.int( string )     /* Возвращает все цифры из строки как одно число int */
---    [F] string  string.shield( string, bool Reverse )    /* Ставит или убирает экранирование спецсимволов в строке. Примеры: [string.shield("Текст?.+-%")] --> "Текст%?%.%+%-%%"; [string.shield("Текст%?%.%+%-%%", true)] --> "Текст?.+-%" */
---    [F] table   string.totable( string Table )  /* Преобразует строку-таблицу в таблицу */
+--   /* Строки */
+--   [F] tuple   string.match( string, string pattern, int position )  /* Ищет вхождение шаблона в строку, возвращает захваченные значения. Поддерживает регулярные выражения */
+--   [F] string  string.strip( string )   /* Убирает пробелы в начале и конце строки */
+--   [F] table   string.split( string, string divider )   /* Разделяет строку по желаемому разделителю, " " - если divider = nil. Возвращает список с строками */
+--   [F] int     string.int( string )     /* Возвращает все цифры из строки как одно число int */
+--   [F] string  string.shield( string, bool Reverse )    /* Ставит или убирает экранирование спецсимволов в строке. Примеры: [string.shield("Текст?.+-%")] --> "Текст%?%.%+%-%%"; [string.shield("Текст%?%.%+%-%%", true)] --> "Текст?.+-%" */
+--   [F] table   string.totable( string Table )  /* Преобразует строку-таблицу в таблицу */
 --
---    /* Таблицы */
---    [F] string  table.debug( table )      /* Возвращает строку "распакованной" таблицы. Разворачивает все вложения, очень удобно для отладки таблицы в LOG() */
---    [F] table   table.copy( table )       /* Возвращает копию таблицы. В lua присвоение таблицы новой переменной НЕ РАВНО созданию копии этой таблицы: [local t = {}; local t2 = t	--> t и t2 одна и та же таблица, просто это разные ссылки на нее]; [local t = {}; local t2 = table_copy(t)	--> t и t2 разные таблицы] */
---    [F] bool    table.equal( table t1, table t2 )   /* Проверяет, являются ли таблицы одинаковыми (поверхностно) */
---    [F] bool    table.empty( table )      /* Проверяет, является ли таблица пустой */
---    [F] string  table.tostring( table )   /* Преобразует таблицу в строку */
---    [F] bool    table.containsvalue( table, any value )   /* Проверяет, содержит ли таблица значение (поверхностно) */
---    [F] bool    table.containskey( table, string key )    /* Проверяет, содержит ли таблица ключ (поверхностно) */
---    [F] int     table.amount( table, any item )    /* Считает количество значений в таблице (поверхностно) */
+--   /* Таблицы */
+--   [F] string  table.debug( table )      /* Возвращает строку "распакованной" таблицы. Разворачивает все вложения, очень удобно для отладки таблицы в LOG() */
+--   [F] table   table.copy( table )       /* Возвращает копию таблицы. В lua присвоение таблицы новой переменной НЕ РАВНО созданию копии этой таблицы: [local t = {}; local t2 = t	--> t и t2 одна и та же таблица, просто это разные ссылки на нее]; [local t = {}; local t2 = table.copy(t)	--> t и t2 разные таблицы] */
+--   [F] bool    table.equal( table t1, table t2 )   /* Проверяет, являются ли таблицы одинаковыми (поверхностно) */
+--   [F] bool    table.empty( table )      /* Проверяет, является ли таблица пустой */
+--   [F] string  table.tostring( table )   /* Преобразует таблицу в строку */
+--   [F] bool    table.containsvalue( table, any value )   /* Проверяет, содержит ли таблица значение (поверхностно) */
+--   [F] bool    table.containskey( table, string key )    /* Проверяет, содержит ли таблица ключ (поверхностно) */
+--   [F] int     table.amount( table, any item )    /* Считает количество значений в таблице (поверхностно) */
 --
 --
---    Class LuaE
---    {
---        /* Таймеры */
---        [M] void script_pause( string CoroutineName, function Callback, int Delay )    /* Создает корутину CoroutineName к которой можно обратиться в любом месте через [script_resume]. Если при обращении к корутине реальное время Delay (секунды) вышло, будет вызвана функция Callback: без скобочек "()", просто имя функции, либо целиком тело функции */
---        [M] AIParam script_resume( string CoroutineName )    /* Обращается к корутине CoroutineName, созданной в [script_pause] */
+--   Class LuaE
+--   {
+--       /* Упрощения */
+--       [M] void p()     /* Аналог таргемовского p(). Принтит в лог игры Point для пути движения камеры camera_paths.xml без запятых */
 --
---        /* Обертка безопасности */
---        Class try
---        {
---            [M] AIParam try( function or string script ) : public LuaE    /* Безопасно выполняет функцию или строку с кодом, не вызывая ошибок игры. Возвращает статус и ошибку */
---            {
---                [M] AIParam value( any value )    /* Интерпретирует любое значение как: [.AsInt] - возвращает целое число, [.AsString] - возвращает строку, [.AsFloat] - возвращает число с запятой, [.AsBoolean] - возвращает логическое значение, [.AsRUchars] - возвращает строку с переведенной латиницей на кириллицу, [.AsENchars] - возвращает строку с переведенной кириллицей на латиницу */
---            }
---        }
+--       /* Таймеры */
+--       [M] void script_pause( string CoroutineName, function Callback, int Delay )    /* Создает корутину CoroutineName к которой можно обратиться в любом месте через [script_resume]. Если при обращении к корутине реальное время Delay (секунды) вышло, будет вызвана функция Callback: без скобочек "()", просто имя функции, либо целиком тело функции */
+--       [M] AIParam script_resume( string CoroutineName )    /* Обращается к корутине CoroutineName, созданной в [script_pause] */
 --
---        /* Файлы */
---        [M] string file_read( string path )     /* Возвращает содержимое файла как строку */
---        [M] table file_lines( string path )     /* Возвращает содержимое файла как список строк */
---        [M] bool file_exists( string path )     /* Проверяет, существует ли файл по этому пути */
---        [M] bool file_open( file descriptor )   /* Проверяет, открыт ли файл в памяти по этому дескриптору */
---    }
+--       /* Обертка безопасности */
+--       Class try
+--       {
+--           [M] AIParam try( function or string script ) : public LuaE    /* Безопасно выполняет функцию или строку с кодом, не вызывая ошибок игры. Возвращает статус и ошибку */
+--           {
+--               [M] AIParam value( any value )    /* Интерпретирует любое значение как: [.AsInt] - возвращает целое число, [.AsString] - возвращает строку, [.AsFloat] - возвращает число с запятой, [.AsBoolean] - возвращает логическое значение, [.AsRUchars] - возвращает строку с переведенной латиницей на кириллицу, [.AsENchars] - возвращает строку с переведенной кириллицей на латиницу */
+--           }
+--       }
+--
+--       /* Файлы */
+--       [M] string file_read( string path )     /* Возвращает содержимое файла как строку */
+--       [M] table file_lines( string path )     /* Возвращает содержимое файла как список строк */
+--       [M] bool file_exists( string path )     /* Проверяет, существует ли файл по этому пути */
+--       [M] bool file_open( file descriptor )   /* Проверяет, открыт ли файл в памяти по этому дескриптору */
+--   }
 -- ]]
 --
 ---------------------------------------------------------------
@@ -193,6 +196,9 @@
 -- [[
 --     local str = string.strip("  lg1")
 --     --> str = "lg1"
+--
+--     LuaE:p()
+--     --> <Point coord="232.592 289.443 872.355" rotation="0.054 0.907 -0.123 -0.399" />
 --
 --     local success, retVal = LuaE.try(function() return 1 + 3 end)
 --     --> retVal = 4
@@ -242,7 +248,10 @@
 -- E Jet: Нужно больше всяких псевдополезностей.
 --
 -- E Jet: Благодарность за идею конвертирования строка/таблица:
+--                       __nEmPoBu4__ 
 --               Целую Петровича в щечк <3 :3 :* ~*~* ///// >.<
+--
+-- E Jet: Благодарность Gnome627 за функцию LuaE:p()!
 -- 
 -- ============================================================
 -- ============================================================
@@ -253,7 +262,7 @@
 
 local LuaE = {}
 LuaE.__index = LuaE
-LuaE.version = "v2.0"
+LuaE.version = "v2.1"
 LuaE.try = {}
 LuaE.freezed_code = {}
 local freeze = LuaE.freezed_code
@@ -265,6 +274,7 @@ local str_sub = string.sub
 local str_gsub = string.gsub
 local str_low = string.lower
 local str_find = string.find
+local str_format = string.format
 
 local t_insert = table.insert
 local t_getn = table.getn
@@ -487,6 +497,14 @@ if not table.amount then
 end
 
 
+function LuaE:p()
+    local pos, rot = GetCameraPos()
+    
+    local posStr = str_format("%.3f %.3f %.3f", pos.x, pos.y, pos.z)
+    local rotStr = str_format("%.3f %.3f %.3f %.3f", rot.x, rot.y, rot.z, rot.w)
+
+    LOG('[I] Module LuaExtended.lua === <Point coord="'..posStr..'" rotation="'..rotStr..'" />')
+end
 
 function LuaE:file_read(path)
     local data
