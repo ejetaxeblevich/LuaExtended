@@ -136,6 +136,9 @@ end
 
 Class LuaE
 {
+    /* Упрощения */
+    [M] void p()     /* Аналог таргемовского p(). Принтит в лог игры Point для пути движения камеры camera_paths.xml без запятых */
+
     /* Таймеры */
     [M] void script_pause( string CoroutineName, function Callback, int Delay )    /* Создает корутину CoroutineName к которой можно обратиться в любом месте через [script_resume]. Если при обращении к корутине реальное время Delay (секунды) вышло, будет вызвана функция Callback: без скобочек "()", просто имя функции, либо целиком тело функции */
     [M] AIParam script_resume( string CoroutineName )    /* Обращается к корутине CoroutineName, созданной в [script_pause] */
@@ -162,6 +165,9 @@ Class LuaE
 ```lua
 local str = string.strip("  lg1")
 --> str = "lg1"
+
+LuaE:p()
+--> <Point coord="232.592 289.443 872.355" rotation="0.054 0.907 -0.123 -0.399" />
 
 local success, retVal = LuaE.try(function() return 1 + 3 end)
 --> retVal = 4
@@ -203,5 +209,7 @@ LuaE:script_resume("co_two")
 
     E Jet: Нужно больше всяких псевдополезностей.
 
-Благодарность ***nEmPoBu4*** за идею конвертирования строка/таблица!
+Благодарность ***\_\_nEmPoBu4\_\_*** за идею конвертирования строка/таблица!
 - Целую Петровича в щечк <3 :3 :* ~*~* ///// >.<
+
+Благодарность ***Gnome627*** за функцию `LuaE:p()`!
