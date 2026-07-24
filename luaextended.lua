@@ -194,9 +194,6 @@
 --     local str = string.strip("  lg1")
 --     --> str = "lg1"
 --
---     LuaE:p()
---     --> <Point coord="232.592 289.443 872.355" rotation="0.054 0.907 -0.123 -0.399" />
---
 --     local success, retVal = LuaE.try(function() return 1 + 3 end)
 --     --> retVal = 4
 --     local success, retVal = LuaE.try("local a = 13; println(a)")
