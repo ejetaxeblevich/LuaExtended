@@ -164,9 +164,6 @@
 --
 --   Class LuaE
 --   {
---       /* Упрощения */
---       [M] void p()     /* Аналог таргемовского p(). Принтит в лог игры Point для пути движения камеры camera_paths.xml без запятых */
---
 --       /* Таймеры */
 --       [M] void script_pause( string CoroutineName, function Callback, int Delay )    /* Создает корутину CoroutineName к которой можно обратиться в любом месте через [script_resume]. Если при обращении к корутине реальное время Delay (секунды) вышло, будет вызвана функция Callback: без скобочек "()", просто имя функции, либо целиком тело функции */
 --       [M] AIParam script_resume( string CoroutineName )    /* Обращается к корутине CoroutineName, созданной в [script_pause] */
@@ -250,8 +247,6 @@
 -- E Jet: Благодарность за идею конвертирования строка/таблица:
 --                       __nEmPoBu4__ 
 --               Целую Петровича в щечк <3 :3 :* ~*~* ///// >.<
---
--- E Jet: Благодарность Gnome627 за функцию LuaE:p()!
 -- 
 -- ============================================================
 -- ============================================================
@@ -496,15 +491,6 @@ if not table.amount then
     end
 end
 
-
-function LuaE:p()
-    local pos, rot = GetCameraPos()
-    
-    local posStr = str_format("%.3f %.3f %.3f", pos.x, pos.y, pos.z)
-    local rotStr = str_format("%.3f %.3f %.3f %.3f", rot.x, rot.y, rot.z, rot.w)
-
-    LOG('[I] Module LuaExtended.lua === <Point coord="'..posStr..'" rotation="'..rotStr..'" />')
-end
 
 function LuaE:file_read(path)
     local data
