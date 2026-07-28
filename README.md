@@ -9,7 +9,7 @@
 
 ***UTILITY LUA-MODULE,*** *written specifically for the game [Hard Truck Apocalypse](https://store.steampowered.com/app/285500/Hard_Truck_Apocalypse__Ex_Machina/)*
 
-<img src="exm_luaextended_logo.png" width="250" />
+<img src="exm_luaextended_logo.png" alt="exm_luaextended_logo_png" width="250" />
 
 ***
 
