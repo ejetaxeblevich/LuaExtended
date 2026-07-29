@@ -61,6 +61,8 @@
 
 Этот lua-модуль является сборником полезных ~~и не очень~~ небольших функций под любую вашу задачу.
 
+> Задача lua-модуля - как-то упростить работу участникам сообщества в создании модификаций, если им сложно реализовать что-то самостоятельно.
+
 ### ВОЗМОЖНОСТИ
 - Расширения `string`;
 - Расширения `table`;
@@ -336,6 +338,8 @@ LuaE:script_resume("co_two")
 ## WHAT IS IT
 
 This lua module is a collection of useful ~~and not so~~ small functions for any of your tasks.
+
+> The task of the lua-module is to somehow simplify the work of community members in creating modifications if it is difficult for them to implement something on their own.
 
 ### FEATURES
 - `string` extensions;
