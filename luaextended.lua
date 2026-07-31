@@ -381,7 +381,7 @@ if not string.totable then
 end
 if not string.commas then
     function string.commas(str)
-        local _, commas = str_gsub(s, ",", ",")
+        local _, commas = str_gsub(str, ",", ",")
         return commas or 0
     end
 end
