@@ -7,7 +7,7 @@
 --               написанный специально для игры
 --             Ex Machina / Hard Truck Apocalypse
 --
---                     LuaExtended v2.1
+--                     LuaExtended v2.2
 -- 
 -- 
 -- ===================== Автор E Jet ==========================
@@ -145,17 +145,20 @@
 -- [[
 --   /* Строки */
 --   [F] tuple   string.match( string, string pattern, int position )  /* Ищет вхождение шаблона в строку, возвращает захваченные значения. Поддерживает регулярные выражения */
---   [F] string  string.strip( string )   /* Убирает пробелы в начале и конце строки */
+--   [F] string  string.strip( string )    /* Убирает пробелы в начале и конце строки */
 --   [F] table   string.split( string, string divider )   /* Разделяет строку по желаемому разделителю, " " - если divider = nil. Возвращает список с строками */
---   [F] int     string.int( string )     /* Возвращает все цифры из строки как одно число int */
+--   [F] int     string.int( string )      /* Возвращает все цифры из строки как одно число int */
 --   [F] string  string.shield( string, bool Reverse )    /* Ставит или убирает экранирование спецсимволов в строке. Примеры: [string.shield("Текст?.+-%")] --> "Текст%?%.%+%-%%"; [string.shield("Текст%?%.%+%-%%", true)] --> "Текст?.+-%" */
 --   [F] table   string.totable( string Table )  /* Преобразует строку-таблицу в таблицу */
+--   [F] int     string.commas( string )   /* Возвращает количество запятых из строки */
 --
 --   /* Таблицы */
 --   [F] string  table.debug( table )      /* Возвращает строку "распакованной" таблицы. Разворачивает все вложения, очень удобно для отладки таблицы в LOG() */
 --   [F] table   table.copy( table )       /* Возвращает копию таблицы. В lua присвоение таблицы новой переменной НЕ РАВНО созданию копии этой таблицы: [local t = {}; local t2 = t	--> t и t2 одна и та же таблица, просто это разные ссылки на нее]; [local t = {}; local t2 = table.copy(t)	--> t и t2 разные таблицы] */
 --   [F] bool    table.equal( table t1, table t2 )   /* Проверяет, являются ли таблицы одинаковыми (поверхностно) */
 --   [F] bool    table.empty( table )      /* Проверяет, является ли таблица пустой */
+--   [F] table   table.clear( table )      /* Очищает существующую таблицу, чтобы не создавать новую. Проходит по числовым индексам таблицы - в таблице не должно быть "дырок": [local t = {[1] = 1, [3] = 3} --> внутри таблицы t нет второго индекса (он уже nil)] = на этой дырке цикл остановится! */
+--   [F] table   table.clear2( table )     /* Очищает существующую таблицу, чтобы не создавать новую. Проходит по всем индексам и ключам таблицы, очищая таблицу целиком вне зависимости от наличия "дырок", жертвуя скоростью по сравнению с [table.clear()] */
 --   [F] string  table.tostring( table )   /* Преобразует таблицу в строку */
 --   [F] bool    table.containsvalue( table, any value )   /* Проверяет, содержит ли таблица значение (поверхностно) */
 --   [F] bool    table.containskey( table, string key )    /* Проверяет, содержит ли таблица ключ (поверхностно) */
@@ -187,12 +190,20 @@
 --
 ---------------------------------------------------------------
 --
---------------- \/ Примеры использования методов \/ ------------
+--------------- \/ Примеры использования \/ ------------
 --
 -- lua
 -- [[
 --     local str = string.strip("  lg1")
 --     --> str = "lg1"
+--
+--     local t = {
+--         a = 3, 
+--         [67] = "text",
+--         ["mega_prikol"] = function() return "huy" end
+--     }
+--     table.clear2(t)
+--     --> t = {}
 --
 --     local success, retVal = LuaE.try(function() return 1 + 3 end)
 --     --> retVal = 4
@@ -233,7 +244,7 @@
 --      Эту и другую информацию вы сможете найти на github  
 -- проекта или найти примеры работы парсера в моде ExplorerMod 
 -- от того же автора.
---      Ссылка на github: https://github.com/ejetaxeblevich
+--      Ссылка на github: https://github.com/ejetaxeblevich/LuaExtended
 --
 ---------------------------------------------------------------
 --
@@ -254,7 +265,7 @@
 
 local LuaE = {}
 LuaE.__index = LuaE
-LuaE.version = "v2.1"
+LuaE.version = "v2.2"
 LuaE.try = {}
 LuaE.freezed_code = {}
 local freeze = LuaE.freezed_code
@@ -368,6 +379,12 @@ if not string.totable then
         return t
     end
 end
+if not string.commas then
+    function string.commas(str)
+        local _, commas = str_gsub(s, ",", ",")
+        return commas or 0
+    end
+end
 
 
 if not table.debug then
@@ -415,6 +432,25 @@ end
 if not table.empty then
     function table.empty(tbl)
         return next(tbl) == nil
+    end
+end
+if not table.clear then
+    function table.clear(tbl)
+        local n = t_getn(tbl)
+        for i = 1, n do
+            tbl[i] = nil
+        end
+        table.setn(tbl, 0)
+        return tbl
+    end
+end
+if not table.clear2 then
+    function table.clear2(tbl)
+        for k in pairs(tbl) do
+            tbl[k] = nil
+        end
+        table.setn(tbl, 0)
+        return tbl
     end
 end
 if not table.tostring then
