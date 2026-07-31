@@ -294,7 +294,7 @@ Class LuaE
 
 <a id="examplesHowToUse_ru"></a><a href="#top">Наверх ↑</a>
 
-### Пример использования методов
+### Пример использования
 
 ```lua
 local str = string.strip("  lg1")
@@ -598,7 +598,7 @@ Class LuaE
 
 <a id="examplesHowToUse_en"></a><a href="#top">Go up ↑</a>
 
-### Example of using methods
+### Examples of usage
 
 ```lua
 local str = string.strip("  lg1")
