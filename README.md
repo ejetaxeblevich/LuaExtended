@@ -294,12 +294,13 @@ Class LuaE
 
 <a id="examplesHowToUse_ru"></a><a href="#top">Наверх ↑</a>
 
-### Пример использования
+### Примеры использования
 
 ```lua
 local str = string.strip("  lg1")
 --> str = "lg1"
-
+```
+```lua
 local t = {
     a = 3, 
     [67] = "text",
@@ -307,16 +308,22 @@ local t = {
 }
 table.clear2(t)
 --> t = {}
-
+```
+```lua
 local success, retVal = LuaE.try(function() return 1 + 3 end)
 --> retVal = 4
+```
+```lua
 local success, retVal = LuaE.try("local a = 13; println(a)")
 --> 13
 --> retVal = nil
+```
+```lua
 local success, retVal = LuaE.try(function() local a = {}; return a + 4 end)
 --> success = false
 --> retVal = "[string "console_string"]:1: attempt to perform arithmetic on local `a' (a table value)"
-
+```
+```lua
 local isValue = LuaE.try:value("-1").AsBoolean
 --> isValue = false
 local isValue = LuaE.try:value(627).AsBoolean
@@ -325,10 +332,12 @@ local isValue = LuaE.try:value(0).AsBoolean
 --> isValue = nil
 local isValue = LuaE.try:value("nil").AsBoolean
 --> isValue = nil
-
+```
+```lua
 local isValue = LuaE.try:value("pisya popa kakashechki").AsRUchars
 --> isValue = "пися попа какашечки"
-
+```
+```lua
 LuaE:script_pause("co_one", function() println("Timer 1 done!") end, 5)
 LuaE:script_pause("co_two", function() println("Timer 2 done!") end, 10)
 --Через 5 секунд реального времени:
@@ -603,7 +612,8 @@ Class LuaE
 ```lua
 local str = string.strip("  lg1")
 --> str = "lg1"
-
+```
+```lua
 local t = {
     a = 3, 
     [67] = "text",
@@ -611,16 +621,21 @@ local t = {
 }
 table.clear2(t)
 --> t = {}
-
+```
+```lua
 local success, retVal = LuaE.try(function() return 1 + 3 end)
 --> retVal = 4
+```
+```lua
 local success, retVal = LuaE.try("local a = 13; println(a)")
 --> 13
 --> retVal = nil
+```
 local success, retVal = LuaE.try(function() local a = {}; return a + 4 end)
 --> success = false
 --> retVal = "[string "console_string"]:1: attempt to perform arithmetic on local `a' (a table value)"
-
+```
+```lua
 local isValue = LuaE.try:value("-1").AsBoolean
 --> isValue = false
 local isValue = LuaE.try:value(627).AsBoolean
@@ -629,10 +644,12 @@ local isValue = LuaE.try:value(0).AsBoolean
 --> isValue = nil
 local isValue = LuaE.try:value("nil").AsBoolean
 --> isValue = nil
-
+```
+```lua
 local isValue = LuaE.try:value("pisya popa kakashechki").AsRUchars
 --> isValue = "пися попа какашечки"
-
+```
+```lua
 LuaE:script_pause("co_one", function() println("Timer 1 done!") end, 5)
 LuaE:script_pause("co_two", function() println("Timer 2 done!") end, 10)
 --After 5 seconds of real time:
