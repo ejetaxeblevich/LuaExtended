@@ -49,9 +49,9 @@
 </div>
 
 > [!WARNING]
-> Этот ReadMe акутален только для `v2.0` версии LuaExtended и выше!
->
-> This ReadMe is relevant only for `v2.0` versions of LuaExtended and above!
+> Этот ReadMe актуален только для последней версии LuaExtended!
+> 
+> This ReadMe is relevant only for the latest version of LuaExtended!
 
 ***
 
