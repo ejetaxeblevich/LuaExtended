@@ -188,6 +188,9 @@ end
 [F] table string.totable( string Table )
 /* Преобразует строку-таблицу в таблицу */
 
+[F] int string.commas( string )
+/* Возвращает количество запятых из строки */
+
 
 /* Таблицы */
 
@@ -211,6 +214,21 @@ end
 
 [F] bool table.empty( table )
 /* Проверяет, является ли таблица пустой */
+
+[F] table table.clear( table )
+/* Очищает существующую таблицу, чтобы не создавать новую.
+
+   Проходит по числовым индексам таблицы
+   в таблице не должно быть "дырок":
+       local t = {[1] = 1, [3] = 3} --> внутри таблицы t нет второго индекса (он уже nil)
+   = на этой дырке цикл остановится! */
+
+[F] table table.clear2( table )
+/* Очищает существующую таблицу, чтобы не создавать новую.
+
+   Проходит по всем индексам и ключам таблицы,
+   очищая таблицу целиком вне зависимости от наличия "дырок",
+   жертвуя скоростью по сравнению с [table.clear()] */
 
 [F] string table.tostring( table )
 /* Преобразует таблицу в строку */
@@ -276,11 +294,19 @@ Class LuaE
 
 <a id="examplesHowToUse_ru"></a><a href="#top">Наверх ↑</a>
 
-### Пример использования методов
+### Пример использования
 
 ```lua
 local str = string.strip("  lg1")
 --> str = "lg1"
+
+local t = {
+    a = 3, 
+    [67] = "text",
+    ["mega_prikol"] = function() return "huy" end
+}
+table.clear2(t)
+--> t = {}
 
 local success, retVal = LuaE.try(function() return 1 + 3 end)
 --> retVal = 4
@@ -466,6 +492,9 @@ All the public functions of this module are collected here. Each function has a 
 [F] table string.totable( string Table )
 /* Converts a string-table to a table */
 
+[F] int string.commas( string )
+/* Returns the number of commas from a string */
+
 
 /* Tables */
 
@@ -489,6 +518,21 @@ All the public functions of this module are collected here. Each function has a 
 
 [F] bool table.empty( table )
 /* Checks if the table is empty */
+
+[F] table table.clear( table )
+/* Clears an existing table so as not to create a new one.
+
+   Passes through the numeric indexes of the table
+   there should be no "holes" in the table:
+      local t = {[1] = 1, [3] = 3} --> there is no second index inside table t (it is already nil)
+   = the cycle stops at this hole! */
+
+[F] table table.clear2( table )
+/* Clears an existing table so as not to create a new one.
+
+   Passes through all indexes and keys of the table,
+   clearing the entire table regardless of the presence of "holes",
+   sacrificing speed compared to [table.clear()] */
 
 [F] string table.tostring( table )
 /* Converts a table to a string */
@@ -554,11 +598,19 @@ Class LuaE
 
 <a id="examplesHowToUse_en"></a><a href="#top">Go up ↑</a>
 
-### Example of using methods
+### Examples of usage
 
 ```lua
 local str = string.strip("  lg1")
 --> str = "lg1"
+
+local t = {
+    a = 3, 
+    [67] = "text",
+    ["mega_prikol"] = function() return "huy" end
+}
+table.clear2(t)
+--> t = {}
 
 local success, retVal = LuaE.try(function() return 1 + 3 end)
 --> retVal = 4
