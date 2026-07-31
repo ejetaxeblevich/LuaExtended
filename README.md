@@ -631,6 +631,7 @@ local success, retVal = LuaE.try("local a = 13; println(a)")
 --> 13
 --> retVal = nil
 ```
+```lua
 local success, retVal = LuaE.try(function() local a = {}; return a + 4 end)
 --> success = false
 --> retVal = "[string "console_string"]:1: attempt to perform arithmetic on local `a' (a table value)"
