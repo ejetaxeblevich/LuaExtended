@@ -1,5 +1,3 @@
-<a id="top"></a>
-
 <div align="center">
 
 # LuaExtended.lua
@@ -10,6 +8,10 @@
 ***UTILITY LUA-MODULE,*** *written specifically for the game [Hard Truck Apocalypse](https://store.steampowered.com/app/285500/Hard_Truck_Apocalypse__Ex_Machina/)*
 
 **Lua 5.0**
+
+<a id="top"></a>
+
+![LuaExtendedVersion](https://img.shields.io/badge/Latest%20version-2.2-blue) ![LuaExtendedDownloads](https://img.shields.io/badge/Total%20downloads-2%2B-green)
 
 <img src="exm_luaextended_logo.png" alt="exm_luaextended_logo_png" width="250" />
 
