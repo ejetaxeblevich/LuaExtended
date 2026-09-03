@@ -255,7 +255,7 @@ end
 [F] int table.amount( table, any item )
 /* Считает количество значений в таблице.
 
-   Поверхностно, для списков по числовым индексам */
+   Рекурсивно, для списков по числовым индексам таблицы */
 
 [F] intK&intV table.amount2( table, any item )
 /* Считает количество ключей и значений в таблице.
@@ -587,7 +587,7 @@ All the public functions of this module are collected here. Each function has a 
 [F] int table.amount( table, any item )
 /* Counts the number of values in the table.
 
-   Superficially, for a list by numeric indices */
+   Recursively, for lists based on numerical indices of the table */
 
 [F] intK&intV table.amount2( table, any item )
 /* Counts the number of keys and values in the table.
