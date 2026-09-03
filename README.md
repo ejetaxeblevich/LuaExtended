@@ -11,7 +11,7 @@
 
 <a id="top"></a>
 
-![LuaExtendedVersion](https://img.shields.io/badge/Latest%20version-2.2-blue) ![LuaExtendedDownloads](https://img.shields.io/badge/Total%20downloads-2%2B-green)
+![LuaExtendedVersion](https://img.shields.io/badge/Latest%20version-2.3-blue) ![LuaExtendedDownloads](https://img.shields.io/badge/Total%20downloads-2%2B-green)
 
 <img src="exm_luaextended_logo.png" alt="exm_luaextended_logo_png" width="250" />
 
@@ -212,7 +212,14 @@ end
       local t2 = table.copy(t)	--> t и t2 разные таблицы */
 
 [F] bool table.equal( table t1, table t2 )
-/* Проверяет, являются ли таблицы одинаковыми (поверхностно) */
+/* Проверяет, являются ли таблицы одинаковыми.
+
+   Поверхностно, для списков по числовым индексам */
+
+[F] bool table.equal2( table t1, table t2 )
+/* Проверяет, являются ли таблицы одинаковыми.
+
+   Рекурсивно, для словарей по всем индексам и ключам */
 
 [F] bool table.empty( table )
 /* Проверяет, является ли таблица пустой */
@@ -235,14 +242,26 @@ end
 [F] string table.tostring( table )
 /* Преобразует таблицу в строку */
 
-[F] bool table.containsvalue( table, any value )
-/* Проверяет, содержит ли таблица значение (поверхностно) */
+[F] bool table.value( table, any value )
+/* Проверяет, содержит ли таблица значение.
 
-[F] bool table.containskey( table, string key )
-/* Проверяет, содержит ли таблица ключ (поверхностно) */
+   Рекурсивно, для словарей по всем индексам и ключам */
+
+[F] bool table.key( table, string key )
+/* Проверяет, содержит ли таблица ключ.
+
+   Рекурсивно, для словарей по всем индексам и ключам */
 
 [F] int table.amount( table, any item )
-/* Считает количество значений в таблице (поверхностно) */
+/* Считает количество значений в таблице.
+
+   Поверхностно, для списков по числовым индексам */
+
+[F] intK&intV table.amount2( table, any item )
+/* Считает количество ключей и значений в таблице.
+
+   Рекурсивно, для словарей по всем индексам и ключам */
+
 
 
 Class LuaE
@@ -525,7 +544,14 @@ All the public functions of this module are collected here. Each function has a 
       local t2 = table.copy(t) --> t and t2 are different tables */
 
 [F] bool table.equal( table t1, table t2 )
-/* Checks if the tables are the same (superficially) */
+/* Checks whether the tables are identical.
+
+   Superficially, for a list by numeric indices */
+
+[F] bool table.equal2( table t1, table t2 )
+/* Checks whether the tables are identical.
+
+   Recursively, for dictionaries, for all indices and keys */
 
 [F] bool table.empty( table )
 /* Checks if the table is empty */
@@ -548,14 +574,25 @@ All the public functions of this module are collected here. Each function has a 
 [F] string table.tostring( table )
 /* Converts a table to a string */
 
-[F] bool table.containsvalue( table, any value )
-/* Checks whether the table contains a value (superficially) */
+[F] bool table.value( table, any value )
+/* Checks whether the table contains a value.
 
-[F] bool table.containskey( table, string key )
-/* Checks whether the table contains a key (superficially) */
+   Recursively, for dictionaries, for all indices and keys */
+
+[F] bool table.key( table, string key )
+/* Checks whether the table contains a key.
+
+   Recursively, for dictionaries, for all indices and keys */
 
 [F] int table.amount( table, any item )
-/* Counts the number of values in the table (superficially) */
+/* Counts the number of values in the table.
+
+   Superficially, for a list by numeric indices */
+
+[F] intK&intV table.amount2( table, any item )
+/* Counts the number of keys and values in the table.
+
+   Recursively, for dictionaries, for all indices and keys */
 
 
 Class LuaE
