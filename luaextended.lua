@@ -7,7 +7,7 @@
 --               написанный специально для игры
 --             Ex Machina / Hard Truck Apocalypse
 --
---                     LuaExtended v2.2
+--                     LuaExtended v2.3
 -- 
 -- 
 -- ===================== Автор E Jet ==========================
@@ -155,14 +155,16 @@
 --   /* Таблицы */
 --   [F] string  table.debug( table )      /* Возвращает строку "распакованной" таблицы. Разворачивает все вложения, очень удобно для отладки таблицы в LOG() */
 --   [F] table   table.copy( table )       /* Возвращает копию таблицы. В lua присвоение таблицы новой переменной НЕ РАВНО созданию копии этой таблицы: [local t = {}; local t2 = t	--> t и t2 одна и та же таблица, просто это разные ссылки на нее]; [local t = {}; local t2 = table.copy(t)	--> t и t2 разные таблицы] */
---   [F] bool    table.equal( table t1, table t2 )   /* Проверяет, являются ли таблицы одинаковыми (поверхностно) */
+--   [F] bool    table.equal( table t1, table t2 )    /* Проверяет, являются ли таблицы одинаковыми. Поверхностно, для списков по числовым индексам */
+--   [F] bool    table.equal2( table t1, table t2 )   /* Проверяет, являются ли таблицы одинаковыми. Рекурсивно, для словарей по всем индексам и ключам */
 --   [F] bool    table.empty( table )      /* Проверяет, является ли таблица пустой */
 --   [F] table   table.clear( table )      /* Очищает существующую таблицу, чтобы не создавать новую. Проходит по числовым индексам таблицы - в таблице не должно быть "дырок": [local t = {[1] = 1, [3] = 3} --> внутри таблицы t нет второго индекса (он уже nil)] = на этой дырке цикл остановится! */
 --   [F] table   table.clear2( table )     /* Очищает существующую таблицу, чтобы не создавать новую. Проходит по всем индексам и ключам таблицы, очищая таблицу целиком вне зависимости от наличия "дырок", жертвуя скоростью по сравнению с [table.clear()] */
 --   [F] string  table.tostring( table )   /* Преобразует таблицу в строку */
---   [F] bool    table.containsvalue( table, any value )   /* Проверяет, содержит ли таблица значение (поверхностно) */
---   [F] bool    table.containskey( table, string key )    /* Проверяет, содержит ли таблица ключ (поверхностно) */
---   [F] int     table.amount( table, any item )    /* Считает количество значений в таблице (поверхностно) */
+--   [F] bool    table.value( table, any value )   /* Проверяет, содержит ли таблица значение. Рекурсивно, для словарей по всем индексам и ключам */
+--   [F] bool    table.key( table, string key )    /* Проверяет, содержит ли таблица ключ. Рекурсивно, для словарей по всем индексам и ключам */
+--   [F] int     table.amount( table, any item )   /* Считает количество значений в таблице. Поверхностно, для списков по числовым индексам */
+--   [F] intK&intV     table.amount2( table, any item )   /* Считает количество ключей и значений в таблице. Рекурсивно, для словарей по всем индексам и ключам */
 --
 --
 --   Class LuaE
@@ -265,7 +267,7 @@
 
 local LuaE = {}
 LuaE.__index = LuaE
-LuaE.version = "v2.2"
+LuaE.version = "v2.3"
 LuaE.try = {}
 LuaE.freezed_code = {}
 local freeze = LuaE.freezed_code
@@ -424,8 +426,36 @@ if not table.equal then
     function table.equal(t1, t2)
         if t_getn(t1) ~= t_getn(t2) then return false end
         for i = 1, t_getn(t1) do
-            if t1[i] ~= t2[i] then return false end
+            if t1[i] ~= t2[i] then 
+                return false 
+            end
         end
+        return true
+    end
+end
+if not table.equal2 then
+    function table.equal2(t1, t2)
+        if t1 == t2 then return true end 
+        if type(t1) ~= type(t2) then return false end 
+        if type(t1) ~= "table" then return t1 == t2 end 
+        for k, v1 in pairs(t1) do 
+            local v2 = t2[k] 
+            if type(v1) == "table" then 
+                if type(v2) ~= "table" then 
+                    return false 
+                end 
+                if not table.equal2(v1, v2) then 
+                    return false 
+                end 
+            elseif v1 ~= v2 then 
+                return false 
+            end 
+        end 
+        for k, v2 in pairs(t2) do 
+            if t1[k] == nil then 
+                return false 
+            end 
+        end 
         return true
     end
 end
@@ -492,35 +522,63 @@ if not table.tostring then
         return serialize(tbl)
     end
 end
-if not table.containsvalue then
-    function table.containsvalue(tbl, value)
-        for _, v in ipairs(tbl) do
-            if v == value then
-                return true
-            end
+if not table.value then
+    function table.value(tbl, value)
+        for k, v in pairs(tbl) do 
+            if type(v) == "table" then
+                local result = table.value(v, value)
+                if result then 
+                    return result
+                end 
+            elseif v == value then 
+                return k
+            end 
         end
-        return false
     end
 end
-if not table.containskey then
-    function table.containskey(tbl, key)
-        for k, _ in pairs(tbl) do
-            if k == key then
-                return true
-            end
+if not table.key then
+    function table.key(tbl, key)
+        for k, v in pairs(tbl) do 
+            if type(v) == "table" then 
+                local result = table.key(v, key)
+                if result then 
+                    return result
+                end 
+            elseif k == key then 
+                return v
+            end 
         end
-        return false
     end
 end
 if not table.amount then
     function table.amount(tbl, item)
-        local skoka = 0
-        for _, v in ipairs(tbl) do
-            if v == item then
-                skoka = skoka+1
+        local amount = 0
+        for i, v in ipairs(tbl) do
+            if type(v) == "table" then
+                amount = amount + table.amount(v, item)
+            elseif v == item then
+                amount = amount + 1
             end
         end
-        return skoka
+        return amount
+    end
+end
+if not table.amount2 then
+    function table.amount2(tbl, item, keys, values)
+        keys = keys or 0
+        values = values or 0
+        for k, v in pairs(tbl) do 
+            if type(v) == "table" and v ~= item then 
+                keys, values = table.amount(v, item, keys, values)
+            end
+            if k == item then
+                keys = keys + 1
+            end
+            if v == item then
+                values = values + 1
+            end
+        end
+        return keys, values
     end
 end
 
