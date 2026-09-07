@@ -11,7 +11,7 @@
 
 <a id="top"></a>
 
-![LuaExtendedVersion](https://img.shields.io/badge/Latest%20version-2.4-blue) ![LuaExtendedDownloads](https://img.shields.io/badge/Total%20downloads-2%2B-green)
+![LuaExtendedVersion](https://img.shields.io/badge/Latest%20version-2.4-blue) ![LuaExtendedDownloads](https://img.shields.io/badge/Total%20downloads-3%2B-green)
 
 <img src="exm_luaextended_logo.png" alt="exm_luaextended_logo_png" width="250" />
 
