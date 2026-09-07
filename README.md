@@ -11,7 +11,7 @@
 
 <a id="top"></a>
 
-![LuaExtendedVersion](https://img.shields.io/badge/Latest%20version-2.3-blue) ![LuaExtendedDownloads](https://img.shields.io/badge/Total%20downloads-2%2B-green)
+![LuaExtendedVersion](https://img.shields.io/badge/Latest%20version-2.4-blue) ![LuaExtendedDownloads](https://img.shields.io/badge/Total%20downloads-2%2B-green)
 
 <img src="exm_luaextended_logo.png" alt="exm_luaextended_logo_png" width="250" />
 
@@ -193,6 +193,14 @@ end
 [F] int string.commas( string )
 /* Возвращает количество запятых из строки */
 
+[F] string string.isbinary( string )
+/* Возвращает строку байт (форматированную),
+
+   если строка содержит бинарные значения */
+
+[F] string string.hex( string, string separator )
+/* Преобразует строку как hex значения с разделением separator */
+
 
 /* Таблицы */
 
@@ -210,6 +218,11 @@ end
 
       local t = {}
       local t2 = table.copy(t)	--> t и t2 разные таблицы */
+
+[F] int table.getn2( table )
+/* Возвращает количество элементов таблицы.
+
+   Поверхностно, для словарей по всем индексам и ключам (стандартный getn считает только списки по индексам) */
 
 [F] bool table.equal( table t1, table t2 )
 /* Проверяет, являются ли таблицы одинаковыми.
@@ -240,15 +253,24 @@ end
    жертвуя скоростью по сравнению с [table.clear()] */
 
 [F] string table.tostring( table )
-/* Преобразует таблицу в строку */
+/* Преобразует таблицу в строку.
 
-[F] bool table.value( table, any value )
-/* Проверяет, содержит ли таблица значение.
+   Рекурсивно, для списков по числовым индексам */
+
+[F] string table.tostring2( table )
+/* Преобразует таблицу в строку.
 
    Рекурсивно, для словарей по всем индексам и ключам */
 
-[F] bool table.key( table, string key )
+[F] string table.value( table, any value )
+/* Проверяет, содержит ли таблица значение.
+   Возвращает его ключ, если есть.
+
+   Рекурсивно, для словарей по всем индексам и ключам */
+
+[F] AIParam table.key( table, string key )
 /* Проверяет, содержит ли таблица ключ.
+   Возвращает его значение, если есть.
 
    Рекурсивно, для словарей по всем индексам и ключам */
 
@@ -525,6 +547,14 @@ All the public functions of this module are collected here. Each function has a 
 [F] int string.commas( string )
 /* Returns the number of commas from a string */
 
+[F] string string.isbinary( string )
+/* Returns a byte string (formatted),
+
+   if the string contains binary values */
+
+[F] string string.hex( string, string separator )
+/* Converts the string into hex values, separating them with the specified separator */
+
 
 /* Tables */
 
@@ -542,6 +572,11 @@ All the public functions of this module are collected here. Each function has a 
 
       local t = {}
       local t2 = table.copy(t) --> t and t2 are different tables */
+
+[F] int table.getn2( table )
+/* Returns the number of elements in the table.
+
+   Superficially, for dictionaries, it counts all indices and keys (the standard getn counts only lists by indices). */
 
 [F] bool table.equal( table t1, table t2 )
 /* Checks whether the tables are identical.
@@ -572,17 +607,26 @@ All the public functions of this module are collected here. Each function has a 
    sacrificing speed compared to [table.clear()] */
 
 [F] string table.tostring( table )
-/* Converts a table to a string */
+/* Converts the table to a string.
 
-[F] bool table.value( table, any value )
+   Recursively, for lists by numeric indices */
+
+[F] string table.tostring2( table )
+/* Converts the table into a string.
+
+   Recursively, for dictionaries, for all indices and keys */
+
+[F] string table.value( table, any value )
 /* Checks whether the table contains a value.
+   Returns its key if present.
 
-   Recursively, for dictionaries, for all indices and keys */
+   Recursively, for dictionaries, across all indices and keys */
 
-[F] bool table.key( table, string key )
+[F] AIParam table.key( table, string key )
 /* Checks whether the table contains a key.
+   Returns its value if present.
 
-   Recursively, for dictionaries, for all indices and keys */
+   Recursively, for dictionaries, across all indices and keys */
 
 [F] int table.amount( table, any item )
 /* Counts the number of values in the table.
