@@ -11,7 +11,7 @@
 
 <a id="top"></a>
 
-![LuaExtendedVersion](https://img.shields.io/badge/Latest%20version-2.4-blue) ![LuaExtendedDownloads](https://img.shields.io/badge/Total%20downloads-3%2B-green)
+![LuaExtendedStatus](https://img.shields.io/badge/Status-Released-yellow?style=for-the-badge) ![LuaExtendedVersion](https://img.shields.io/badge/Latest%20version-2.4-blue?style=for-the-badge) ![LuaExtendedDownloads](https://img.shields.io/github/downloads/ejetaxeblevich/LuaExtended/total?label=Total%20downloads&color=green&style=for-the-badge)
 
 <img src="exm_luaextended_logo.png" alt="exm_luaextended_logo_png" width="250" />
 
