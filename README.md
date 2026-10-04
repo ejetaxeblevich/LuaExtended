@@ -72,7 +72,11 @@
 - *Python-like* функция `try`;
 - Простые взаимодействия `file`.
 
-<a id="allAboutIt_ru"></a><a href="#top">Наверх ↑</a>
+<a id="allAboutIt_ru"></a>
+
+<div align="right">
+  <a href="#top">Наверх ↑</a>
+</div>
 
 ### Дисклеймер
 
@@ -144,7 +148,11 @@ end
 - ***ЗАПРЕЩАЕТСЯ*** использовать этот lua-модуль в своих модах без указания авторства. А то натравлю порчу и наколдую недельный понос 😡 
 *Шутка 💋*
 
-<a id="allFunctions_ru"></a><a href="#top">Наверх ↑</a>
+<a id="allFunctions_ru"></a>
+
+<div align="right">
+  <a href="#top">Наверх ↑</a>
+</div>
 
 ## ФУНКЦИИ И МЕТОДЫ
 
@@ -335,7 +343,11 @@ Class LuaE
 }
 ```
 
-<a id="examplesHowToUse_ru"></a><a href="#top">Наверх ↑</a>
+<a id="examplesHowToUse_ru"></a>
+
+<div align="right">
+  <a href="#top">Наверх ↑</a>
+</div>
 
 ### Примеры использования
 
@@ -391,7 +403,11 @@ LuaE:script_resume("co_two")
 --> Timer 2 done!
 ```
 
-<a id="detailsAndThanks_ru"></a><a href="#top">Наверх ↑</a>
+<a id="detailsAndThanks_ru"></a>
+
+<div align="right">
+  <a href="#top">Наверх ↑</a>
+</div>
 
 ## ПОДРОБНЕЕ
 
@@ -405,7 +421,9 @@ LuaE:script_resume("co_two")
 Благодарность ***\_\_nEmPoBu4\_\_*** за идею конвертирования строка/таблица!
 - Целую Петровича в щечк <3 :3 :* ~*~* ///// >.<
 
-<a href="#top">Наверх ↑</a>
+<div align="right">
+  <a href="#top">Наверх ↑</a>
+</div>
 
 ----
 
@@ -426,7 +444,11 @@ This lua module is a collection of useful ~~and not so~~ small functions for any
 - *Python-like* `try` function;
 - Simple `file` interactions.
 
-<a id="allAboutIt_en"></a><a href="#top">Go up ↑</a>
+<a id="allAboutIt_en"></a>
+
+<div align="right">
+  <a href="#top">Go up ↑</a>
+</div>
 
 ### Disclaimer
 
@@ -498,7 +520,11 @@ end
 - ***FORBIDDEN*** to use this lua module in your mods without attribution. Otherwise, I'll set off a spell and conjure up a week's diarrhea. 
 *A joke 💋*
 
-<a id="allFunctions_en"></a><a href="#top">Go up ↑</a>
+<a id="allFunctions_en"></a>
+
+<div align="right">
+  <a href="#top">Go up ↑</a>
+</div>
 
 ## FUNCTIONS AND METHODS
 
@@ -688,7 +714,11 @@ Class LuaE
 }
 ```
 
-<a id="examplesHowToUse_en"></a><a href="#top">Go up ↑</a>
+<a id="examplesHowToUse_en"></a>
+
+<div align="right">
+  <a href="#top">Go up ↑</a>
+</div>
 
 ### Examples of usage
 
@@ -744,7 +774,11 @@ LuaE:script_resume("co_two")
 --> Timer 2 done!
 ```
 
-<a id="detailsAndThanks_en"></a><a href="#top">Go up ↑</a>
+<a id="detailsAndThanks_en"></a>
+
+<div align="right">
+  <a href="#top">Go up ↑</a>
+</div>
 
 ## LEARN MORE
 
@@ -758,4 +792,6 @@ You can find this and other information in the project file or find examples of 
 Thanks ***\_\_nEmPoBu4\_\_*** for the idea of converting string/table!
 - Kiss Petrovich on the cheek <3 :3 :* ~*~* ///// >.<
 
-<a href="#top">Go up ↑</a>
+<div align="right">
+  <a href="#top">Go up ↑</a>
+</div>
