@@ -9,7 +9,7 @@
 **Lua 5.0**
 
 <a href="https://github.com/ejetaxeblevich/LuaExtended/releases"><img src="https://img.shields.io/badge/Статус-Вышел-yellow?style=for-the-badge" alt="LuaExtendedStatus"/></a> 
-<a href="https://github.com/ejetaxeblevich/LuaExtended/releases/tag/260731b"><img src="https://img.shields.io/badge/Последняя%20версия-2.4-blue?style=for-the-badge" alt="LuaExtendedVersion"/></a> 
+<a href="https://github.com/ejetaxeblevich/LuaExtended/releases/tag/260907a"><img src="https://img.shields.io/badge/Последняя%20версия-2.4-blue?style=for-the-badge" alt="LuaExtendedVersion"/></a> 
 <a href="https://tooomm.github.io/github-release-stats"><img src="https://img.shields.io/github/downloads/ejetaxeblevich/LuaExtended/total?label=%D0%92%D1%81%D0%B5%D0%B3%D0%BE%20%D1%81%D0%BA%D0%B0%D1%87%D0%B8%D0%B2%D0%B0%D0%BD%D0%B8%D0%B9&amp;color=green&amp;style=for-the-badge" alt="LuaExtendedDownloads"/></a> 
 
 <img src="exm_luaextended_logo.png" alt="exm_luaextended_logo_png" width="350" />
