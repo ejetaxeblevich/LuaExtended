@@ -1,21 +1,21 @@
 -- ============================================================
 -- ============================================================
--- 
--- 
+--
+--
 --                   УТИЛИТНЫЙ LUA-МОДУЛЬ,
--- 
+--
 --               написанный специально для игры
 --             Ex Machina / Hard Truck Apocalypse
 --
---                     LuaExtended v2.4
--- 
--- 
+--                     LuaExtended v2.5
+--
+--
 -- ===================== Автор E Jet ==========================
 -- ============================================================
--- 
+--
 --     Note: Please translate this text, if it nessesary.
--- 
--- 
+--
+--
 -- ======================= ЧТО ЭТО ============================
 --
 --
@@ -23,6 +23,7 @@
 -- небольших функций под любую вашу задачу:
 --      - Расширения string;
 --      - Расширения table;
+--      - Скриптовая диагностика;
 --      - Coroutine-таймер;
 --      - Python-like функция try;
 --      - Простые взаимодействия file.
@@ -34,58 +35,58 @@
 ------------------------- Дисклеймер -----------------------
 --
 --      АВТОР ЭТОГО ТВОРЕНИЯ ДУМАЕТ, ЧТО ЗНАЕТ, КАК ПРАВИЛЬНО
--- НАЗЫВАТЬ И ИСПОЛЬЗОВАТЬ ВЕЩИ В ПРОГРАММИРОВАНИИ, ПОЭТОМУ 
--- ПРОСЬБА ДЛЯ ПРОГРАММИСТОВ ЗДОРОВОГО ЧЕЛОВЕКА - ПОНЯТЬ И 
--- ПРОСТИТЬ, ЕСЛИ ЗДЕСЬ ЧТО-ТО(ВСЕ) НЕ ТАК. 
+-- НАЗЫВАТЬ И ИСПОЛЬЗОВАТЬ ВЕЩИ В ПРОГРАММИРОВАНИИ, ПОЭТОМУ
+-- ПРОСЬБА ДЛЯ ПРОГРАММИСТОВ ЗДОРОВОГО ЧЕЛОВЕКА - ПОНЯТЬ И
+-- ПРОСТИТЬ, ЕСЛИ ЗДЕСЬ ЧТО-ТО(ВСЕ) НЕ ТАК.
 --      АВТОР ПОНИМАЕТ И ПРИНИМАЕТ, ЧТО ВЕСЬ КОД НИЖЕ И ЭТОТ
 -- ТЕКСТ НАПИСАН ПЛОХО, НЕПОНЯТНО И ГРОМОЗДКО, ЧТО ДАЖЕ В ЭТОМ
--- ЗАНЯТИИ НЕТ НИ МАЛЕЙШЕГО СМЫСЛА - КАК И СМЫСЛА В ЭТОМ КАПСОМ 
+-- ЗАНЯТИИ НЕТ НИ МАЛЕЙШЕГО СМЫСЛА - КАК И СМЫСЛА В ЭТОМ КАПСОМ
 -- НАПИСАННОМ ДИСКЛЕЙМЕРЕ.
 --
---      LUA-МОДУЛЬ РАСПРОСТРАНЯЕТСЯ СВОБОДНО "КАК ЕСТЬ" И 
--- ИСПОЛЬЗУЕТСЯ ИГРОЙ EX MACHINA / HARD TRUCK APOCALYPSE И МОЖЕТ 
--- БЫТЬ ИЗМЕНЕН ЛЮБЫМ ДРУГИМ ПОЛЬЗОВАТЕЛЕМ (МОДДЕРОМ) ВНУТРИ СВОИХ 
+--      LUA-МОДУЛЬ РАСПРОСТРАНЯЕТСЯ СВОБОДНО "КАК ЕСТЬ" И
+-- ИСПОЛЬЗУЕТСЯ ИГРОЙ EX MACHINA / HARD TRUCK APOCALYPSE И МОЖЕТ
+-- БЫТЬ ИЗМЕНЕН ЛЮБЫМ ДРУГИМ ПОЛЬЗОВАТЕЛЕМ (МОДДЕРОМ) ВНУТРИ СВОИХ
 -- МОДИФИКАЦИЙ И ПРОЧИХ РЕСУРСАХ.
---      АВТОР НЕ НЕСЕТ ОТВЕТСТВЕННОСТИ ЗА КАКИЕ-ЛИБО ПОСЛЕДСТВИЯ, 
+--      АВТОР НЕ НЕСЕТ ОТВЕТСТВЕННОСТИ ЗА КАКИЕ-ЛИБО ПОСЛЕДСТВИЯ,
 -- ПОВЛЕКШИХ ЗА СОБОЙ УЩЕРБ ВО ВРЕМЯ ИСПОЛЬЗОВАНИЯ ЭТОГО, А
 -- ТАКЖЕ ЛЮБОЙ ДРУГОЙ, В Т.Ч. ИЗМЕНЕННОЙ ВЕРСИИ LUA-МОДУЛЯ ИЛИ
 -- ЧАСТЕЙ КОДА, ПОЗАИМСТВОВАННЫХ (ПЕРЕПИСАННЫХ) ИЗ ЭТОГО ФАЙЛА.
--- 
+--
 ---------------------------------------------------------------
 --
 -- ============================================================
 --
 -- ================= КАК ЭТО ИСПОЛЬЗОВАТЬ =====================
--- 
--- 
---      Для полноценного lua-модуля этой поделке еще далеко, 
+--
+--
+--      Для полноценного lua-модуля этой поделке еще далеко,
 -- поэтому ее не нужно устанавливать как lua-библиотеку в системе.
--- 
---      В игру этот lua-модуль загружается двумя способами: через 
--- [require()] или [dofile()]. Это внутренние lua-команды игры. 
--- Наш знакомый [EXECUTE_SCRIPT] не подойдет, так как он не возвращает 
+--
+--      В игру этот lua-модуль загружается двумя способами: через
+-- [require()] или [dofile()]. Это внутренние lua-команды игры.
+-- Наш знакомый [EXECUTE_SCRIPT] не подойдет, так как он не возвращает
 -- объект модуля.
---      Чем отличается [require()] от [dofile()]? 
+--      Чем отличается [require()] от [dofile()]?
 --      - [require()] загружает файл в игру при первом выполнении
--- и держит в памяти игры до перезапуска. Эта команда используется 
--- для подгрузки модулей здорового человека, которые устанавливаются 
+-- и держит в памяти игры до перезапуска. Эта команда используется
+-- для подгрузки модулей здорового человека, которые устанавливаются
 -- в систему (но необязательно);
---      - [dofile()] загружает в память игры файл столько раз, 
+--      - [dofile()] загружает в память игры файл столько раз,
 -- сколько был вызван. Очищается весь внутренний кеш lua-модуля и
 -- принимаются настройки по умолчанию. Рекомендуется для отладки и
 -- прочего дебага.
 --      Рекомендую прописывать команду в конец файла server.lua
--- игры, поскольку могут использоваться в модуле команды, которые 
+-- игры, поскольку могут использоваться в модуле команды, которые
 -- грузятся в игру чуть раньше сервера ("могут"? автор альцгеймер!).
 --
---      В качестве аргумента функции указывается локальный путь до 
+--      В качестве аргумента функции указывается локальный путь до
 -- файла модуля.
---      Возвращаемая таблица помещается в глобальную переменную, 
--- которая будет использована как объект, на который будут 
--- применяться методы (функции) этого модуля через двоеточие. 
+--      Возвращаемая таблица помещается в глобальную переменную,
+-- которая будет использована как объект, на который будут
+-- применяться методы (функции) этого модуля через двоеточие.
 --
 -- Чтобы было понятнее, вспомним как мы обращаемся к машине игрока:
--- 
+--
 -- lua
 -- [[
 --      local Plv = GetPlayerVehicle()
@@ -101,7 +102,7 @@
 --      local Gde = CVector(1,2,3)
 --      local Gde.y = g_ObjCont:GetHeight(Gde.x, Gde.z)  --> метод на объект
 -- ]]
--- 
+--
 --      После загрузки модуля в игру уже можно начинать пользоваться его
 -- методами и глобальныим командами.
 --
@@ -132,11 +133,11 @@
 -- =================== ФУНКЦИИ И МЕТОДЫ =======================
 --
 --
---      Здесь собраны все публичнные функции этого модуля. У 
+--      Здесь собраны все публичнные функции этого модуля. У
 -- каждой функции имеется детальное описание, что она делает и
 -- что в ней указывать.
 --
---      Обратите внимание, что дочерний класс должен вызывать 
+--      Обратите внимание, что дочерний класс должен вызывать
 -- главный метод своего родительского класса вплоть до LuaE.
 --
 ---------------------------------------------------------------
@@ -153,6 +154,7 @@
 --   [F] int     string.commas( string )   /* Возвращает количество запятых из строки */
 --   [F] string  string.isbinary( string ) /* Возвращает строку байт (форматированную), если строка содержит бинарные значения */
 --   [F] string  string.hex( string, string separator )   /* Преобразует строку как hex значения с разделением separator */
+--   [F] string  string.escpat( string )   /* Возвращает строку без спецсимволов паттерна Lua */
 --
 --
 --   /* Таблицы */
@@ -174,6 +176,9 @@
 --
 --   Class LuaE
 --   {
+--       /* Диагностика */
+--       [M] string caller_info()    /* Возвращает информацию, откуда был вызван скрипт. Полезная альтернатива отключенному debug */
+--
 --       /* Таймеры */
 --       [M] void script_pause( string CoroutineName, function Callback, int Delay )    /* Создает корутину CoroutineName к которой можно обратиться в любом месте через [script_resume]. Если при обращении к корутине реальное время Delay (секунды) вышло, будет вызвана функция Callback: без скобочек "()", просто имя функции, либо целиком тело функции */
 --       [M] AIParam script_resume( string CoroutineName )    /* Обращается к корутине CoroutineName, созданной в [script_pause] */
@@ -184,6 +189,7 @@
 --           [M] AIParam try( function or string script ) : public LuaE    /* Безопасно выполняет функцию или строку с кодом, не вызывая ошибок игры. Возвращает статус и ошибку */
 --           {
 --               [M] AIParam value( any value )    /* Интерпретирует любое значение как: [.AsInt] - возвращает целое число, [.AsString] - возвращает строку, [.AsFloat] - возвращает число с запятой, [.AsBoolean] - возвращает логическое значение, [.AsRUchars] - возвращает строку с переведенной латиницей на кириллицу, [.AsENchars] - возвращает строку с переведенной кириллицей на латиницу */
+--               [M] table   lib( string name )    /* Чтение библиотек через rawget как обход ошибок с "необъявленными переменными". Полезно, если происходит попытка получить библиотеку, отключенную движком */
 --           }
 --       }
 --
@@ -205,7 +211,7 @@
 --     --> str = "lg1"
 --
 --     local t = {
---         a = 3, 
+--         a = 3,
 --         [67] = "text",
 --         ["mega_prikol"] = function() return "huy" end
 --     }
@@ -248,21 +254,21 @@
 -- ======================= ПОДРОБНЕЕ ==========================
 --
 --
---      Эту и другую информацию вы сможете найти на github  
--- проекта или найти примеры работы парсера в моде ExplorerMod 
+--      Эту и другую информацию вы сможете найти на github
+-- проекта или найти примеры работы парсера в моде ExplorerMod
 -- от того же автора.
 --      Ссылка на github: https://github.com/ejetaxeblevich/LuaExtended
 --
 ---------------------------------------------------------------
 --
 -- =================== КОММЕНТАРИИ АВТОРА =====================
--- 
+--
 -- E Jet: Нужно больше всяких псевдополезностей.
 --
 -- E Jet: Благодарность за идею конвертирования строка/таблица:
---                       __nEmPoBu4__ 
+--                       __nEmPoBu4__
 --               Целую Петровича в щечк <3 :3 :* ~*~* ///// >.<
--- 
+--
 -- ============================================================
 -- ============================================================
 
@@ -272,7 +278,7 @@
 
 local LuaE = {}
 LuaE.__index = LuaE
-LuaE.version = "v2.4"
+LuaE.version = "v2.5"
 LuaE.try = {}
 LuaE.freezed_code = {}
 local freeze = LuaE.freezed_code
@@ -291,9 +297,13 @@ local t_insert = table.insert
 local t_concat = table.concat
 local t_getn = table.getn
 local t_setn = table.setn
+
 local next = next
 local pairs = pairs
 local ipairs = ipairs
+local pairs = pairs
+local rawget = rawget
+local type = type
 
 local io_open = io.open
 
@@ -343,7 +353,7 @@ LuaE.unshield = {
     ["%]"] = "]",
     ["%("] = "(",
     ["%)"] = ")",
-    
+
     ["%."] = ".",
     ["%^"] = "^",
     ["%$"] = "$",
@@ -482,8 +492,8 @@ if not string.shield then
 end
 if not string.totable then
     function string.totable(str)
-        if not str_find(str, "{") then 
-            str = "{}" 
+        if not str_find(str, "{") then
+            str = "{}"
         end
         local t = dostring("local t = "..str.."; return t")
         return t
@@ -519,12 +529,18 @@ if not string.hex then
         return t_concat(result)
     end
 end
+if not string.escpat then
+    function string.escpat(str)
+        --escape pattern
+        return (str_gsub(str, "([%^%$%(%)%%%.%[%]%*%+%-%?])", "%%%1"))
+    end
+end
 
 
 if not table.debug then
     function table.debug(tbl, indent)
-        if type(tbl)~="table" then 
-            return ""..tostring(tbl) 
+        if type(tbl)~="table" then
+            return ""..tostring(tbl)
         end
         indent = indent or 0
         local result = ""
@@ -556,10 +572,10 @@ if not table.copy then
 end
 if not table.getn2 then
     function table.getn2(tbl)
-        local n = 0 
-        for k in pairs(tbl) do 
-            n = n + 1 
-        end 
+        local n = 0
+        for k in pairs(tbl) do
+            n = n + 1
+        end
         return n
     end
 end
@@ -567,8 +583,8 @@ if not table.equal then
     function table.equal(t1, t2)
         if t_getn(t1) ~= t_getn(t2) then return false end
         for i = 1, t_getn(t1) do
-            if t1[i] ~= t2[i] then 
-                return false 
+            if t1[i] ~= t2[i] then
+                return false
             end
         end
         return true
@@ -576,27 +592,27 @@ if not table.equal then
 end
 if not table.equal2 then
     function table.equal2(t1, t2)
-        if t1 == t2 then return true end 
-        if type(t1) ~= type(t2) then return false end 
-        if type(t1) ~= "table" then return t1 == t2 end 
-        for k, v1 in pairs(t1) do 
-            local v2 = t2[k] 
-            if type(v1) == "table" then 
-                if type(v2) ~= "table" then 
-                    return false 
-                end 
-                if not table.equal2(v1, v2) then 
-                    return false 
-                end 
-            elseif v1 ~= v2 then 
-                return false 
-            end 
-        end 
-        for k, v2 in pairs(t2) do 
-            if t1[k] == nil then 
-                return false 
-            end 
-        end 
+        if t1 == t2 then return true end
+        if type(t1) ~= type(t2) then return false end
+        if type(t1) ~= "table" then return t1 == t2 end
+        for k, v1 in pairs(t1) do
+            local v2 = t2[k]
+            if type(v1) == "table" then
+                if type(v2) ~= "table" then
+                    return false
+                end
+                if not table.equal2(v1, v2) then
+                    return false
+                end
+            elseif v1 ~= v2 then
+                return false
+            end
+        end
+        for k, v2 in pairs(t2) do
+            if t1[k] == nil then
+                return false
+            end
+        end
         return true
     end
 end
@@ -641,7 +657,7 @@ if not table.tostring then
         local function serialize(tbl)
             if type(tbl)~="table" then
                 --'{"idi nahui eto ne massiff)))0)"}'
-                return "nil" 
+                return "nil"
             end
             if seen[tbl] then
                 return "'<recursive " .. tostring(tbl) .. ">'"
@@ -686,7 +702,7 @@ if not table.tostring2 then
         local function serialize(tbl)
             if type(tbl)~="table" then
                 --'{"idi nahui eto ne massiff)))0)"}'
-                return "nil" 
+                return "nil"
             end
             if seen[tbl] then
                 return "'<recursive " .. tostring(tbl) .. ">'"
@@ -729,29 +745,29 @@ end
 
 if not table.value then
     function table.value(tbl, value)
-        for k, v in pairs(tbl) do 
+        for k, v in pairs(tbl) do
             if type(v) == "table" then
                 local result = table.value(v, value)
-                if result then 
+                if result then
                     return result
-                end 
-            elseif v == value then 
+                end
+            elseif v == value then
                 return k
-            end 
+            end
         end
     end
 end
 if not table.key then
     function table.key(tbl, key)
-        for k, v in pairs(tbl) do 
-            if type(v) == "table" then 
+        for k, v in pairs(tbl) do
+            if type(v) == "table" then
                 local result = table.key(v, key)
-                if result then 
+                if result then
                     return result
-                end 
-            elseif k == key then 
+                end
+            elseif k == key then
                 return v
-            end 
+            end
         end
     end
 end
@@ -773,8 +789,8 @@ if not table.amount2 then
         local keys, values = 0, 0
 
         local function serialize(tbl)
-            for k, v in pairs(tbl) do 
-                if type(v) == "table" and v ~= item then 
+            for k, v in pairs(tbl) do
+                if type(v) == "table" and v ~= item then
                     keys, values = serialize(v)
                 end
                 if k == item then
@@ -833,12 +849,12 @@ function LuaE:file_open(f)
 end
 
 
-function LuaE:script_pause(stringCoroutineName, functionCallback, intDelay)  
+function LuaE:script_pause(stringCoroutineName, functionCallback, intDelay)
 	local stringCoroutineName = stringCoroutineName or "co_one"
-    local start = os.time()  
-    freeze[stringCoroutineName] = coroutine.create(function()  
-        while os.time() - start < intDelay do  
-            coroutine.yield()  
+    local start = os.time()
+    freeze[stringCoroutineName] = coroutine.create(function()
+        while os.time() - start < intDelay do
+            coroutine.yield()
         end
 		local s, e = pcall(functionCallback)
         if not s then
@@ -846,19 +862,51 @@ function LuaE:script_pause(stringCoroutineName, functionCallback, intDelay)
 		end
     end)
 end
-function LuaE:script_resume(stringCoroutineName)  
+function LuaE:script_resume(stringCoroutineName)
 	local stringCoroutineName = stringCoroutineName or "co_one"
 	local co_status = coroutine.status(freeze[stringCoroutineName])
 	if co_status=="suspended" then
 		return coroutine.resume(freeze[stringCoroutineName])
 	end
-	return co_status 
+	return co_status
 end
 
 
-
-
 --XMLParser
+local function stack_pos(level)
+    --внутри замыкания: 1 - оно само, 2 - pcall, 3 - stack_pos, 4 - вызвавший stack_pos, и т.д
+    local ok, msg = pcall(function() error("", level + 3) end)
+    if type(msg) ~= "string" then
+        return nil
+    end
+    local _, _, src, line = str_find(msg, "^(.-):(%d+): ")
+    if src then
+        return src, line
+    end
+    return nil
+end
+
+local MY_SRC = stack_pos(0)
+
+function LuaE:caller_info()
+    local parts = {}
+    local n = 0
+    for level = 2, 16 do
+        local src, line = stack_pos(level)
+        if src and src ~= MY_SRC then
+            n = n + 1
+            parts[n] = src..":"..line
+            if n >= 3 then
+                break
+            end
+        end
+    end
+    if n == 0 then
+        return ""
+    end
+    return " (called from "..t_concat(parts, " <- ")..")"
+end
+
 local function TranslateRUCharsToENChars(text)
     local translitTable = {
         ['а'] = 'a',  ['б'] = 'b',   ['в'] = 'v',  ['г'] = 'g',  ['д'] = 'd',
@@ -919,45 +967,31 @@ local function _INTERPRETATION(Value)
         AsBoolean = function()
             if not Value then return nil end
             if type(Value)=="userdata" then return true end
-            if tostring(Value)=="" or tostring(Value)=="nil" or (tonumber(Value) or 1)==0 then return nil end
-            if tostring(Value)=="true" or (tonumber(Value) or -1)>0 then return true end
-            if tostring(Value)=="false" or 0>(tonumber(Value) or 1) then return false end
+            local v = tostring(Value)
+            local i = tonumber(Value)
+            if v=="" or v=="nil" or (i or 1)==0 then return nil end
+            if v=="true" or (i or -1)>0 then return true end
+            if v=="false" or 0>(i or 1) then return false end
             return true
         end,
         AsString = function()
-            if not Value then Value = "nil" end
-            local v = tostring(Value)
-            if v then return v end
-            return Value
+            return Value and tostring(Value) or nil
         end,
         AsInt = function()
-            if not Value then Value = 0 end
-            local v = math.floor(tonumber(Value) or 0)
-            if v then return v end
-            return Value
+            local v = tonumber(Value)
+            return v and math.floor(v) or nil
         end,
         AsFloat = function()
-            if not Value then Value = 0 end
-            local v = tonumber(Value) or 0
-            if v then return v end
-            return Value
+            return tonumber(Value) or nil
         end,
         AsENchars = function()
-            if not Value then Value = "nil" end
-            local v = tostring(Value)
-            if v then v = TranslateRUCharsToENChars(v) end
-            if v then return v end
-            return Value
+            return Value and TranslateRUCharsToENChars(tostring(Value)) or nil
         end,
         AsRUchars = function()
-            if not Value then Value = "nil" end
-            local v = tostring(Value)
-            if v then v = TranslateENCharsToRUChars(v) end
-            if v then return v end
-            return Value
+            return Value and TranslateENCharsToRUChars(tostring(Value)) or nil
         end
     }
-    
+
     local metatable = setmetatable({}, {
         __index = function(_, key)
             local interpreter = interpreters[key]
@@ -976,6 +1010,14 @@ local function _INTERPRETATION(Value)
     })
 
     return metatable
+end
+
+function try:lib(name)
+	local ok, lib = pcall(rawget, _G, name)
+    if ok and type(lib) == "table" then
+        return lib
+    end
+    return nil
 end
 
 function try:value(value)
