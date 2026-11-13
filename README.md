@@ -9,7 +9,7 @@
 **Lua 5.0**
 
 <a href="https://github.com/ejetaxeblevich/LuaExtended/releases"><img src="https://img.shields.io/badge/Статус-Вышел-yellow?style=for-the-badge" alt="LuaExtendedStatus"/></a> 
-<a href="https://github.com/ejetaxeblevich/LuaExtended/releases/tag/260907a"><img src="https://img.shields.io/badge/Последняя%20версия-2.4-blue?style=for-the-badge" alt="LuaExtendedVersion"/></a> 
+<a href="https://github.com/ejetaxeblevich/LuaExtended/releases/tag/261113a"><img src="https://img.shields.io/badge/Последняя%20версия-2.5-blue?style=for-the-badge" alt="LuaExtendedVersion"/></a> 
 <a href="https://tooomm.github.io/github-release-stats"><img src="https://img.shields.io/github/downloads/ejetaxeblevich/LuaExtended/total?label=%D0%92%D1%81%D0%B5%D0%B3%D0%BE%20%D1%81%D0%BA%D0%B0%D1%87%D0%B8%D0%B2%D0%B0%D0%BD%D0%B8%D0%B9&amp;color=green&amp;style=for-the-badge" alt="LuaExtendedDownloads"/></a> 
 
 <img src="exm_luaextended_logo.png" alt="exm_luaextended_logo_png" width="350" />
@@ -71,6 +71,7 @@
 ### ВОЗМОЖНОСТИ
 - Расширения `string`;
 - Расширения `table`;
+- Скриптовая диагностика;
 - Coroutine-таймер;
 - *Python-like* функция `try`;
 - Простые взаимодействия `file`.
@@ -214,6 +215,9 @@ end
 [F] string string.hex( string, string separator )
 /* Преобразует строку как hex значения с разделением separator */
 
+[F] string string.escpat( string )
+/* Возвращает строку без спецсимволов паттерна Lua */
+
 
 /* Таблицы */
 
@@ -301,13 +305,21 @@ end
 
 Class LuaE
 {
+    /* Диагностика */
+
+    [M] string caller_info()
+    /* Возвращает информацию, откуда был вызван скрипт.
+
+       Полезная альтернатива отключенному debug */
+
+
     /* Таймеры */
 
     [M] void script_pause( string CoroutineName, function Callback, int Delay )
     /* Создает корутину CoroutineName к которой можно обратиться в любом месте через [script_resume()].
 
-      Если при обращении к корутине реальное время Delay (секунды) вышло,
-      будет вызвана функция Callback: без скобочек "()", просто имя функции, либо целиком тело функции */
+       Если при обращении к корутине реальное время Delay (секунды) вышло,
+       будет вызвана функция Callback: без скобочек "()", просто имя функции, либо целиком тело функции */
 
     [M] AIParam script_resume( string CoroutineName )
     /* Обращается к корутине CoroutineName, созданной в [script_pause()] */
@@ -329,6 +341,11 @@ Class LuaE
                [.AsBoolean] - возвращает логическое значение.
                [.AsRUchars] - возвращает строку с переведенной латиницей на кириллицу.
                [.AsENchars] - возвращает строку с переведенной кириллицей на латиницу. */
+
+            [M] table lib( string name )
+            /* Чтение библиотек через rawget как обход ошибок с "необъявленными переменными".
+
+               Полезно, если происходит попытка получить библиотеку, отключенную движком */
         }
     }
 
@@ -443,6 +460,7 @@ This lua module is a collection of useful ~~and not so~~ small functions for any
 ### FEATURES
 - `string` extensions;
 - `table` extensions;
+- Script diagnostics;
 - Coroutine-timer;
 - *Python-like* `try` function;
 - Simple `file` interactions.
@@ -586,6 +604,9 @@ All the public functions of this module are collected here. Each function has a 
 [F] string string.hex( string, string separator )
 /* Converts the string into hex values, separating them with the specified separator */
 
+[F] string string.escpat( string )
+/* Returns a string without special characters of the Lua pattern */
+
 
 /* Tables */
 
@@ -672,13 +693,21 @@ All the public functions of this module are collected here. Each function has a 
 
 Class LuaE
 {
+    /* Diagnostics */
+
+    [M] string caller_info()
+    /* Returns information about where the script was called from.
+
+       A useful alternative to disabled debug */
+
+
     /* Timers */
 
     [M] void script_pause( string CoroutineName, function Callback, int Delay )
     /* Creates a CoroutineName that can be accessed anywhere via [script_resume()].
 
-      If the real Delay time (seconds) has expired when accessing the coroutine,
-      the Callback function will be called: without the parentheses "()", just the function name, or the entire function body. */
+       If the real Delay time (seconds) has expired when accessing the coroutine,
+       the Callback function will be called: without the parentheses "()", just the function name, or the entire function body. */
 
     [M] AIParam script_resume( string CoroutineName )
     /* Accesses the CoroutineName created in [script_pause()] */
@@ -700,6 +729,11 @@ Class LuaE
                [.AsBoolean] - returns a boolean value.
                [.AsRUchars] - returns a string with the Latin alphabet translated into Cyrillic.
                [.AsENchars] - returns a string from translated Cyrillic to Latin. */
+
+            [M] table lib( string name )
+            /* Reading libraries through rawget as a way to bypass errors with "undeclared variables".
+
+               It is useful if there is an attempt to get a library disabled by the engine. */
         }
     }
 
