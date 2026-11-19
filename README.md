@@ -1,6 +1,6 @@
 <div align="center">
 
-# LuaExtended.lua
+# LuaExtended
 
 ***УТИЛИТНЫЙ LUA-МОДУЛЬ,*** *написанный специально для игры [Ex Machina](https://store.steampowered.com/app/285500/Hard_Truck_Apocalypse__Ex_Machina/)*
 
